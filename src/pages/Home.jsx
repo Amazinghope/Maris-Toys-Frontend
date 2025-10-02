@@ -7,7 +7,7 @@ import AutoSlider from "../components/Slider";
 import AgeSelector from "../components/AgeSelector";
 import CategorySection from "../components/CategorySection";
 import ShapesBackground from "../components/ShapesBackground";
-import SettingPanel from "../components/settingPanel";
+import SettingPanel from "../components/SettingPanel";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
