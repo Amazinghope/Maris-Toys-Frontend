@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { selectCartItems } from "../redux/cartSlice"; // ✅ import selector
 
-import logo from "/assets/maris-logo.jpg";
+// import logo from "/assets/maris-logo.jpg";
 import { FaSearch, FaMapMarkerAlt, FaUserCircle, FaShoppingCart } from "react-icons/fa";
 import { FaInstagram, FaFacebook, FaTwitter, FaWhatsapp } from "react-icons/fa";
 
@@ -29,7 +29,7 @@ const Header = () => {
         <div className="flex items-center gap-4">
           <Link to="/">
             <img
-              src={logo}
+              src="/assets/maris-logo.jpg"
               alt="Maris Educreative Toys Logo"
               className="w-12 sm:w-16 rounded-2xl transition-transform hover:scale-110"
             />
