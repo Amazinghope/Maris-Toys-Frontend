@@ -1,13 +1,14 @@
 import { FaEnvelope } from "react-icons/fa";
 import { FaLock } from "react-icons/fa";
 import { Link } from "react-router-dom";
-import heroImg from "/assets/block-play.png";
+// import heroImg from "/assets/block-play.png";
 
 const Register = () => {
   return (
     <div className="flex mt-10 mx-auto justify-around">
       <div className="w-[45%]">
-        <img src={heroImg} alt="Hero-Img" className="opacity-65" />
+        <img src="/assets/block-play.png" alt="block play" className="opacity-65" />
+        {/* <img src={heroImg} alt="Hero-Img" className="opacity-65" /> */}
       </div>
       <div className="border-2 w-[45%]  p-4">
         <h1 className="text-xl font-bold mb-2">
