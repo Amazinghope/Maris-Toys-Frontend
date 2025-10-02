@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { Settings, X } from "lucide-react"; // Lucide icons
 
-const SettingsPanel = ({ onToggleShapes, onToggleTwinkle }) => {
+const SettingPanel = ({ onToggleShapes, onToggleTwinkle }) => {
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,4 +44,4 @@ const SettingsPanel = ({ onToggleShapes, onToggleTwinkle }) => {
   );
 };
 
-export default SettingsPanel;
+export default SettingPanel;

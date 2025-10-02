@@ -7,7 +7,7 @@ import AutoSlider from "../components/Slider";
 import AgeSelector from "../components/AgeSelector";
 import CategorySection from "../components/CategorySection";
 import ShapesBackground from "../components/ShapesBackground";
-import SettingsPanel from "../components/settingPanel";
+import SettingPanel from "../components/settingPanel";
 
 const HomePage = () => {
   const [products, setProducts] = useState([]);
@@ -149,7 +149,7 @@ const HomePage = () => {
         </section>
       </div>
 
-      <SettingsPanel
+      <SettingPanel
         onToggleShapes={() => setShapeCount((prev) => prev + 10)}
         onToggleTwinkle={() => setThemeIndex((prev) => prev + 1)}
       />

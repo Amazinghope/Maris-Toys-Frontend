@@ -2,13 +2,15 @@ import API from "../api"
 
 // Get products (with search, filter, sort, pagination)
 export const fetchProducts = async (params = {}) => {
-  const res = await API.get("/all-products", { params });
-  return res.data; // { items, total, page, pageSize, totalPages }
+  console.log("Fetching products from:", API.defaults.baseURL + "/products/all-products");
+
+  const res = await API.get("/products/all-products", { params });
+  return res.data; // { items, total, page, pageSize, totalPages } 
 };
 
 // Get single product details
 export const fetchProductById = async (id) => {
-  const res = await API.get(`/get-single-product/${id}`);
+  const res = await API.get(`/products/get-single-product/${id}`);
   return res.data; // product object
 };
 
