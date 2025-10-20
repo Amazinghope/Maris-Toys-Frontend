@@ -3,7 +3,7 @@ import "./App.css";
 import HomePage from "./pages/Home";
 import ProductDetail from "./pages/ProductDetails.jsx";
 import CartPage from "./pages/CartPage";
-import PlaceOrder from "./pages/placeOrder.jsx";
+import PlaceOrder from "./pages/PlaceOrder.jsx";
 import ConfirmOrder from "./pages/ConfirmOrder.jsx";
 import OrderSuccess from "./pages/OrderSuccess.jsx";
 import Header from "./components/Header";
