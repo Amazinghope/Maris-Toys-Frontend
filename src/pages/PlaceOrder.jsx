@@ -33,7 +33,7 @@ function PlaceOrder() {
   return (
     <div className="p-6 max-w-lg mx-auto">
       <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
-      {["fullName", "address", "city", "postalCode", "country"].map((f) => (
+      {/* {["fullName", "address", "city", "postalCode", "country"].map((f) => ( */}
         <input
           key={f}
           name={f}
@@ -43,7 +43,18 @@ function PlaceOrder() {
           value={formData[f]}
           onChange={handleChange}
         />
-      ))}
+      {/* ))} */}
+
+{["fullName", "address", "city", "postalCode", "country"].map((f) => (
+  <input
+    key={f}
+    name={f}
+    placeholder={f.charAt(0).toUpperCase() + f.slice(1)}
+    className="border w-full mb-3 p-2 rounded"
+    value={formData[f]}
+    onChange={handleChange}
+  />
+))}
 
       <button
         onClick={handleNext}
