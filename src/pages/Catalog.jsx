@@ -5,6 +5,7 @@ import { addToCart } from "../redux/cartSlice";
 import AgeSelector from "../components/AgeSelector";
 import API from "../api";
 
+
 const Catalog = () => {
   const [products, setProducts] = useState([]);
   const [filtered, setFiltered] = useState([]);

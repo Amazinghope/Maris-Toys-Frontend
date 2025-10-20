@@ -2,13 +2,13 @@ import API from "../api";
 
 // Create an order
 export const createOrder = async (orderData) => {
-  const res = await API.post("/order/create-order", orderData, {withCredentials: true});
+  const res = await API.post("/api/order/create-order", orderData, {withCredentials: true});
   return res.data; // { id, order }
 };
 
 // Get order by ID
 export const fetchOrderById = async (id) => {
-  const res = await API.get(`/order/get-order/${id}`, {withCredentials: true});
+  const res = await API.get(`/api/order/get-order/${id}`, {withCredentials: true});
   return res.data; // full order details
 };
 
