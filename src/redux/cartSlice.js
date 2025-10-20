@@ -1,67 +1,146 @@
 import { createSlice, createSelector } from "@reduxjs/toolkit";
 
+const savedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+
 const cartSlice = createSlice({
   name: "cart",
   initialState: {
-    items: {},
+    items: savedCart, // ✅ always an array
   },
   reducers: {
     initCart: (state, action) => {
-      state.items = action.payload.items || {};
+      state.items = action.payload.items || [];
     },
     addToCart: (state, action) => {
       const { id, product } = action.payload;
-      if (state.items[id]) {
-        state.items[id].qty += 1;
+      const existingItem = state.items.find((item) => item.id === id);
+      if (existingItem) {
+        existingItem.qty += 1;
       } else {
-        state.items[id] = { product, qty: 1 };
+        state.items.push({ id, product, qty: 1 });
       }
     },
     increaseQty: (state, action) => {
       const { id } = action.payload;
-      if (state.items[id]) state.items[id].qty += 1;
+      const item = state.items.find((item) => item.id === id);
+      if (item) item.qty += 1;
     },
     decreaseQty: (state, action) => {
       const { id } = action.payload;
-      if (state.items[id] && state.items[id].qty > 1) {
-        state.items[id].qty -= 1;
-      }
+      const item = state.items.find((item) => item.id === id);
+      if (item && item.qty > 1) item.qty -= 1;
     },
     removeFromCart: (state, action) => {
       const { id } = action.payload;
-      delete state.items[id];
+      state.items = state.items.filter((item) => item.id !== id);
+    },
+    clearCart: (state) => {
+      state.items = [];
     },
   },
 });
 
-export const { initCart, addToCart, increaseQty, decreaseQty, removeFromCart } =
-  cartSlice.actions;
+export const {
+  initCart,
+  addToCart,
+  increaseQty,
+  decreaseQty,
+  removeFromCart,
+  clearCart,
+} = cartSlice.actions;
 
 export default cartSlice.reducer;
 
 //
-// 🔽 Selectors with memoization
+// 🔽 Selectors
 //
 const selectCartState = (state) => state.cart;
 
 export const selectCartItems = createSelector(
   [selectCartState],
-  (cart) => Object.values(cart.items) // only recalculates if cart.items changes
+  (cart) => cart.items
 );
 
-export const selectCartTotals = createSelector(
-  [selectCartItems],
-  (items) => {
-    const subTotal = items.reduce(
-      (sum, item) => sum + item.product.price * item.qty,
-      0
-    );
-    const shippingFee = subTotal > 5000 ? 0 : 250;
-    const tax = Math.round(subTotal * 0.075);
-    const total = subTotal + shippingFee + tax;
-    return { subTotal, shippingFee, tax, total };
-  }
-);
+export const selectCartTotals = createSelector([selectCartItems], (items) => {
+  const subTotal = items.reduce(
+    (sum, item) => sum + item.product.price * item.qty,
+    0
+  );
+  const shippingFee = subTotal > 5000 ? 0 : 250;
+  const tax = Math.round(subTotal * 0.075);
+  const total = subTotal + shippingFee + tax;
+  return { subTotal, shippingFee, tax, total };
+});
+
+
+// import { createSlice, createSelector } from "@reduxjs/toolkit";
+// const savedCart = JSON.parse(localStorage.getItem("cartItems")) || [];
+
+// const cartSlice = createSlice({
+//   name: "cart",
+//   initialState: {
+//     items: savedCart,
+//   },
+//   reducers: {
+//     initCart: (state, action) => {
+//       state.items = action.payload.items || {};
+//     },
+//     addToCart: (state, action) => {
+//       const { id, product } = action.payload;
+//       if (state.items[id]) {
+//         state.items[id].qty += 1;
+//       } else {
+//         state.items[id] = { product, qty: 1 };
+//       }
+//     },
+//     increaseQty: (state, action) => {
+//       const { id } = action.payload;
+//       if (state.items[id]) state.items[id].qty += 1;
+//     },
+//     decreaseQty: (state, action) => {
+//       const { id } = action.payload;
+//       if (state.items[id] && state.items[id].qty > 1) {
+//         state.items[id].qty -= 1;
+//       }
+//     },
+//     removeFromCart: (state, action) => {
+//       const { id } = action.payload;
+//       delete state.items[id];
+//     },
+//     clearCart: (state) => {
+//       state.items = {};
+//     },
+//   },
+// });
+
+// export const { initCart, addToCart, increaseQty, decreaseQty, removeFromCart, clearCart } =
+//   cartSlice.actions;
+
+// export default cartSlice.reducer;
+
+// //
+// // 🔽 Selectors with memoization
+// //
+// const selectCartState = (state) => state.cart;
+
+// export const selectCartItems = createSelector(
+//   [selectCartState],
+//   (cart) => Object.values(cart.items) // only recalculates if cart.items changes
+// );
+
+// export const selectCartTotals = createSelector(
+//   [selectCartItems],
+//   (items) => {
+//     const subTotal = items.reduce(
+//       (sum, item) => sum + item.product.price * item.qty,
+//       0
+//     );
+//     const shippingFee = subTotal > 5000 ? 0 : 250;
+//     const tax = Math.round(subTotal * 0.075);
+//     const total = subTotal + shippingFee + tax;
+//     return { subTotal, shippingFee, tax, total };
+//   }
+// );
 
 
 

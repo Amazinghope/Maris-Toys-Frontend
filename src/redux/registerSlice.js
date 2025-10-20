@@ -14,6 +14,9 @@ export const registerUser = createAsyncThunk(
     }
   }
 );
+export const getAllUsers = createAsyncThunk(
+  "reg/"
+)
 
 const registerSlice = createSlice({
   name: "register",

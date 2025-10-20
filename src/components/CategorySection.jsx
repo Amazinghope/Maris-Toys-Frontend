@@ -5,65 +5,75 @@ import 'slick-carousel/slick/slick-theme.css';
 const categories = [
   {
     id: 1,
+    title: 'Action Figure  and Playset',
+    images: [
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432019/spider-man_kneuft.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759433293/mario-toy_es0iuc.jpg',
+    ],
+
+  },
+
+  {    
+    id: 2,
     title: 'Adventure Toys',
     images: [
-      '/assets/dessert-racing-car.jpg',
-      '/assets/fire-fighter-safari.jpg',
-      '/assets/model-car.jpg',
-      '/assets/train.jpg',
-    ]
-  },
-  {
-    id: 2,
-    title: 'Board Games & Accessories',
-    images: [
-      '/assets/Dart-game.jpg',
-      '/assets/board-games.jpg',
-      '/assets/junior-scrabble.jpg',
-      '/assets/senior-scrabble.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431910/dessert-racing-car_szm2cl.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431918/fire-fighter-safari_f5t1t1.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431878/model-car_w7pjqh.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432043/train_qdnf8n.jpg',
     ]
   },
   {
     id: 3,
-    title: 'Books',
+    title: 'Board Games & Accessories',
     images: [
-      '/assets/abc-foam-book.jpg',
-      '/assets/abc-foam-book.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431924/Dart-game_gbqj8q.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431844/board-games_dwwams.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431840/junior-scrabble_jtgw50.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432009/senior-scrabble_afrp5e.jpg',
     ]
   },
   {
     id: 4,
-    title: 'Brain Teasers',
+    title: 'Books',
     images: [
-      '/assets/rubic.jpg',
-      '/assets/rubic2.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431816/abc-foam-book_cgayel.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431816/abc-foam-book_cgayel.jpg',
     ]
   },
   {
     id: 5,
-    title: 'Building Blocks',
+    title: 'Brain Teasers',
     images: [
-      '/assets/building-block-zoo.jpg',
-      '/assets/building-block.jpg',
-      '/assets/building-blocks2.jpg',
-      '/assets/building-block3.jpg',
-      '/assets/straw-building-blocks.mp4',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431998/rubic_fn9dz7.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431999/rubic2_xky3ey.jpg',
     ]
   },
   {
     id: 6,
-    title: 'Role Playing Toys',
+    title: 'Building Blocks',
     images: [
-      '/assets/test-skit.jpg',
-      '/assets/keyboard.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431922/building-block-zoo_wg2jys.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431861/building-block_nfc837.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431882/building-blocks2_ejqqnb.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431869/building-block3_ttbowr.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/video/upload/v1759432296/straw-building-blocks_r0866o.mp4',
     ]
   },
   {
     id: 7,
+    title: 'Role Playing Toys',
+    images: [
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432084/test-skit_o4o9fu.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431817/keyboard_z0ebx2.jpg',
+    ]
+  },
+  {
+    id: 8,
     title: 'Stationery',
     images: [
-      '/assets/pencil-eraser-sharpners.jpg',
-      '/assets/wrist-watch.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431905/pencil-eraser-sharpners_m1xfrj.jpg',
+      'https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432158/wrist-watch_u5pefe.jpg',
     ]
   }
 ];

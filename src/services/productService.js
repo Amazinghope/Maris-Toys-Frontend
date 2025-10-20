@@ -5,13 +5,18 @@ export const fetchProducts = async (params = {}) => {
   console.log("Fetching products from:", API.defaults.baseURL + "/products/all-products");
 
   const res = await API.get("/products/all-products", { params });
-  return res.data; // { items, total, page, pageSize, totalPages } 
+  const data = res.data.productDetails;
+  console.log("Fetched data:", data);
+
+  console.log("Fetched data:", data); // 
+
+  return res.data.productDetails || null; // { items, total, page, pageSize, totalPages } 
 };
 
 // Get single product details
 export const fetchProductById = async (id) => {
   const res = await API.get(`/products/get-single-product/${id}`);
-  return res.data; // product object
+  return res.data.productDetails; // product object
 };
 
 

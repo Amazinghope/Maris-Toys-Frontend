@@ -3,12 +3,19 @@ import "./App.css";
 import HomePage from "./pages/Home";
 import ProductDetail from "./pages/ProductDetails.jsx";
 import CartPage from "./pages/CartPage";
-import Checkout from "./pages/Checkout";
+import PlaceOrder from "./pages/placeOrder.jsx";
+import ConfirmOrder from "./pages/ConfirmOrder.jsx";
+import OrderSuccess from "./pages/OrderSuccess.jsx";
 import Header from "./components/Header";
 import CategorySection from "./components/CategorySection";
 import Login from "./components/Login";
+import VerifyOtp from "./pages/VerifyOtp.jsx";
 import Register from "./components/Register";
+import AdminDb from "./admin/AdminDb.jsx";
 import Catalog from "./pages/Catalog.jsx";
+// import ProductList from "./components/ProductList.jsx";
+import Footer from "./components/Footer.jsx";
+
 
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -26,7 +33,7 @@ function App() {
     }
   }, [dispatch]);
 
-  // ✅ Save cart to localStorage whenever it changes
+  // ✅ Save cart to localStorage whenever it changes 
   useEffect(() => {
     localStorage.setItem("edutoy_cart", JSON.stringify(cart));
   }, [cart]);
@@ -37,13 +44,21 @@ function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/catalog" element={<Catalog />} />
-        <Route path="/log-in" element={<Login />} />
+        <Route path="/admin-db" element={<AdminDb />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/verify-otp" element={<VerifyOtp />} />
         <Route path="/register" element={<Register />} />
         <Route path="/product/:id" element={<ProductDetail />} />
+        {/* <Route path="/products" element={<ProductList />} /> */}
+
         <Route path="/cart" element={<CartPage />} />
-        <Route path="/checkout" element={<Checkout />} />
+        <Route path="/place-order" element={<PlaceOrder />} />
+        <Route path="/confirm-order" element={<ConfirmOrder />} />
+        <Route path="/order-success/:id" element={<OrderSuccess />} />
+
         <Route path="/category" element={<CategorySection />} />
       </Routes>
+      <Footer/>
     </Router>
   );
 }

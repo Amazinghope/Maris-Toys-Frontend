@@ -7,51 +7,51 @@ import "slick-carousel/slick/slick-theme.css";
 const slides = [
   {
     id: 1,
-    url: "/assets/test-skit.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432084/test-skit_o4o9fu.jpg",
   },
   {
     id: 2,
-    url: "/assets/abc-foam-book.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431816/abc-foam-book_cgayel.jpg",
   },
 
   {
     id: 3,
-    url: "/assets/building-block-zoo.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431922/building-block-zoo_wg2jys.jpg",
   },
 
   {
     id: 4,
-    url: "/assets/board-games.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431844/board-games_dwwams.jpg",
   },
 
   {
     id: 5,
-    url: "/assets/Dart-game.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431924/Dart-game_gbqj8q.jpg",
   },
 
   {
     id: 6,
-    url: "/assets/dessert-racing-car.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431910/dessert-racing-car_szm2cl.jpg",
   },
 
   {
     id: 7,
-    url: "/assets/keyboard.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431817/keyboard_z0ebx2.jpg",
   },
 
   {
     id: 8,
-    url: "/assets/mario-toy.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759433293/mario-toy_es0iuc.jpg",
   },
 
   {
     id: 9,
-    url: "/assets/rubic2.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431999/rubic2_xky3ey.jpg",
   },
 
   {
     id: 10,
-    url: "/assets/fire-fighter-safari.jpg",
+    url: "https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759431918/fire-fighter-safari_f5t1t1.jpg",
   },
 ];
 
@@ -68,7 +68,7 @@ const AutoSlider = () => {
   };
 
   return (
-    <div className="relative  overflow-hidden bg-blue-700/70 py-8">
+    <div className="relative  overflow-hidden bg-blue-700/70 py-8 rounded-3xl">
      {/* <ShapesBackground /> */}
     <div className=" w-10/12 mx-auto  text-center overflow-visible shadow rounded-full bg-white ">
       {/* <TwinkleBg/> */}
@@ -79,7 +79,7 @@ const AutoSlider = () => {
             key={slide.id}
             src={slide.url}
             alt={`Slide ${slide.id}`}
-            className="w-full h-60 sm:h-80 object-contain rounded py-4"
+            className="w-full img h-60 sm:h-80 object-contain rounded py-4"
           />
 
         )
