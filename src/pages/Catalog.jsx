@@ -4,6 +4,7 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import AgeSelector from "../components/AgeSelector";
 import API from "../api";
+import { fetchProducts } from "../services/productService";
 
 
 const Catalog = () => {
@@ -19,9 +20,9 @@ const Catalog = () => {
 
   // ✅ Fetch all products ONCE
   useEffect(() => {
-    const fetchProducts = async () => {
+    const fetchingProducts = async () => {
       try {
-        const res = await API.get("/api/products/all-products");
+        const res = await API.get(fetchProducts);
         const all = res.data.productDetails || [];
         setProducts(all);
         setFiltered(all);
@@ -31,7 +32,7 @@ const Catalog = () => {
         setLoading(false);
       }
     };
-    fetchProducts();
+    fetchingProducts();
   }, []);
 
   // ✅ Filter by search and age
