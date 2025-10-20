@@ -21,7 +21,7 @@ const Catalog = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await API.get("/products/all-products");
+        const res = await API.get("/api/products/all-products");
         const all = res.data.productDetails || [];
         setProducts(all);
         setFiltered(all);
