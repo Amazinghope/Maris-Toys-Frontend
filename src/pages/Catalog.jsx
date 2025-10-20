@@ -70,7 +70,7 @@ const Catalog = () => {
     <div className="px-6 py-10">
       <AgeSelector onAgeSelect={handleAgeSelect} />
 
-      {filtered.length === 0 ? (
+      {filtered.length > 0 ? (
         <div className="text-center mt-20">
           <p className="text-gray-500 text-lg">
             No products found for{" "}
