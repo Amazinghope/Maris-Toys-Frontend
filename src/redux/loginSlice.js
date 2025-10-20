@@ -24,7 +24,7 @@ export const loginuser = createAsyncThunk(
   "auth/login",
   async (credentials, { rejectWithValue }) => {
     try {
-      const res = await API.post("/auth/login", credentials, { withCredentials: true });
+      const res = await API.post("/api/auth/login", credentials, { withCredentials: true });
 
       // Expecting backend to return { status: "Success", tempToken }
       if (res.data?.status === "Success" && res.data?.tempToken) {
@@ -61,7 +61,7 @@ export const verifyOtp = createAsyncThunk(
 
       // send userId and otp to backend; include credentials so cookie is set
       const res = await API.post(
-        "/auth/verify-otp",
+        "/api/auth/verify-otp",
         {  otp },
         { withCredentials: true }
       );
@@ -93,7 +93,7 @@ export const resendOtp = createAsyncThunk(
     const payload = parseJwt(tempToken)
     const userId = payload?.sub || payload?.id || payload?._id
     if(!userId) return  rejectWithValue("invalid session token") 
-    const res = await API.post("/auth/resend-otp", {userId}, {withCredentials: true})
+    const res = await API.post("/api/auth/resend-otp", {userId}, {withCredentials: true})
    
     if(res.data?.status === "success"){
       console.log("📦 Backend verifyOtp response:", res.data);
