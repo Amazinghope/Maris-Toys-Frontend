@@ -201,7 +201,7 @@ export const { logout, clearAuthMessage } = loginSlice.actions;
 export default loginSlice.reducer;
 
 
-// import { createSlice, createAsyncThunk} from "@reduxjs/toolkit";
+
 // import API from "../api";
 
 // export const loginuser = createAsyncThunk(
