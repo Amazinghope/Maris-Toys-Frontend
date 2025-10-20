@@ -37,7 +37,8 @@ function PlaceOrder() {
         <input
           key={f}
           name={f}
-          placeholder={f.replace(/([A-Z])/g, " $1")}
+          placeholder={String(f).replace(/([A-Z])/g, " $1")}
+
           className="border w-full mb-3 p-2 rounded"
           value={formData[f]}
           onChange={handleChange}
