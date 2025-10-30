@@ -27,20 +27,7 @@ const HomePage = () => {
     .catch(() => setError("Failed to load products"))
     .finally(() => setLoading(false));
 }, [selectedAge]);
-  // useEffect(() => {
-  //   const url = selectedAge ? `/api/products?age=${selectedAge}` : "/api/products";
-  //   fetch(url)
-  //     .then((res) => res.json())
-  //     .then((data) => {
-  //       setProducts(data.slice(0, 8));
-  //       setLoading(false);
-  //     })
-  //     .catch(() => {
-  //       setError("Failed to load products");
-  //       setLoading(false);
-  //     });
-  // }, [selectedAge]);
-
+  
   return (
     <div className="relative z-10 min-h-screen bg-gray-100 w-full">
       {/* Shapes Background */}

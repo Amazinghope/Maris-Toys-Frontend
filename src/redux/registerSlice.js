@@ -1,5 +1,6 @@
 // src/features/auth/registerSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import API from "../api";
 
 // Async thunk for registration
 export const registerUser = createAsyncThunk(
@@ -7,16 +8,16 @@ export const registerUser = createAsyncThunk(
   async (userData, { rejectWithValue }) => {
     try {
       // now use API instead of axios
-      const res = await API.post("/register", userData);
+      const res = await API.post("/auth/register", userData);
       return res.data.userDetails;
     } catch (err) {
       return rejectWithValue(err.response?.data || "Something went wrong");
     }
   }
 );
-export const getAllUsers = createAsyncThunk(
-  "reg/"
-)
+// export const getAllUsers = createAsyncThunk(
+//   "auth/reg"
+// )
 
 const registerSlice = createSlice({
   name: "register",

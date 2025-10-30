@@ -99,9 +99,9 @@ const Header = () => {
               Store
             </button>
 
-            <Link to="/blog" className="hover:text-yellow-200 transition-colors">
+            {/* <Link to="/blog" className="hover:text-yellow-200 transition-colors">
               Blog
-            </Link>
+            </Link> */}
           </nav>
 
           {/* Cart + User */}
@@ -121,16 +121,16 @@ const Header = () => {
 
           {/* Social Icons */}
           <div className="hidden sm:flex gap-3">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
+            {/* <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
               <FaInstagram className="text-xl" />
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
+            </a> */}
+            <a href="https://facebook.com/mariseducreativehands" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
               <FaFacebook className="text-xl" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
+            {/* <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
               <FaTwitter className="text-xl" />
-            </a>
-            <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
+            </a> */}
+            <a href="https://wa.me/2349116964464" target="_blank" rel="noopener noreferrer" className="hover:text-yellow-200 transition-colors">
               <FaWhatsapp className="text-xl" />
             </a>
           </div>

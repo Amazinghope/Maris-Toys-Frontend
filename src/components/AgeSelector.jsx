@@ -12,7 +12,7 @@ const AgeSelector = ({ onAgeSelect }) => {
     { id: 4, range: "10+", label: "10+ Years", description: "Complex games, science kits, and strategy toys" },
   ];
 
-  const [selectedAge, setSelectedAge] = useState(null);
+  const [selectedAge, setSelectedAge] = useState("");
 
   const handleAgeSelect = (ageGroup) => {
     setSelectedAge(ageGroup.range);
@@ -25,7 +25,7 @@ const AgeSelector = ({ onAgeSelect }) => {
       navigate("/catalog");
     } else {
       // Otherwise, navigate to catalog with selected age range
-      navigate(`/catalog?age=${ageGroup.range}`);
+      navigate(`/catalog?age=${encodeURIComponent(ageGroup.range)}`);
     }
   };
 

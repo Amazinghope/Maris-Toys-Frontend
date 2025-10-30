@@ -1,8 +1,12 @@
-
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectCartItems, selectCartTotals, clearCart } from "../redux/cartSlice";
+import { toast } from "react-toastify";
+import {
+  selectCartItems,
+  selectCartTotals,
+  clearCart,
+} from "../redux/cartSlice";
 import { createOrder } from "../services/orderServices";
 
 function ConfirmOrder() {
@@ -12,16 +16,21 @@ function ConfirmOrder() {
   const total = useSelector(selectCartTotals);
   const [shippingAddress, setShippingAddress] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
-
+  const [paymentMethod, setPaymentMethod] = useState("Bank Transfer");
+  const [showBankDetails, setShowBankDetails] = useState(true);
+  const {user} = useSelector((state)=> state.login)
   useEffect(() => {
     const savedAddress = localStorage.getItem("shippingAddress");
     if (savedAddress) setShippingAddress(JSON.parse(savedAddress));
   }, []);
 
   const handlePlaceOrder = async () => {
+    if(!user){
+      toast.warning("Please log in to place your order.")
+      navigate('/login')
+    }
     if (!shippingAddress) {
-      alert("Shipping address not found. Please go back and enter details.");
+      toast.error("Shipping address not found. Please go back and enter details.");
       return;
     }
 
@@ -29,12 +38,27 @@ function ConfirmOrder() {
       setLoading(true);
 
       const orderData = {
-        items: items.map(({ product, qty }) => ({
-          productId: product._id,
-          qty,
+        items: items.map((item) => ({
+          product: item.product?._id || item._id, // handles both shapes
+          name: item.product?.name || item.name,
+          price: item.product?.price || item.price,
+          qty: item.qty,
+          image: item.product?.image || item.image || "",
         })),
-        shippingAddress,
-        paymentMethod,
+        shippingAddress: {
+          fullName: shippingAddress.fullName,
+          postalCode: shippingAddress.postalCode,
+          email: shippingAddress.email,
+          phone: shippingAddress.phone,
+          address: shippingAddress.address,
+          city: shippingAddress.city,
+          state: shippingAddress.state,
+        },
+        paymentMethod: "Bank Transfer",
+        totalPrice: items.reduce(
+          (sum, item) => sum + (item.product?.price || item.price) * item.qty,
+          0
+        ),
       };
 
       const res = await createOrder(orderData);
@@ -43,15 +67,12 @@ function ConfirmOrder() {
       dispatch(clearCart());
       localStorage.removeItem("shippingAddress");
 
-      // Adjust depending on your backend response
+      toast.success(
+        "Order created successfully! Please proceed with the bank transfer."
+      );
+
       const orderId = res._id || res.order?._id;
-
-      if (orderId) {
-        navigate(`/order-success/${orderId}`);
-      } else {
-        alert("Order created but no ID returned from server.");
-      }
-
+      if (orderId) navigate(`/order-success/${orderId}`);
     } catch (error) {
       console.error("❌ Failed to place order:", error);
       alert("Failed to place order. Please try again.");
@@ -66,35 +87,100 @@ function ConfirmOrder() {
     <div className="max-w-3xl mx-auto p-6">
       <h2 className="text-2xl font-semibold mb-4">Confirm Your Order</h2>
 
+      {/* Shipping Address */}
       <div className="border rounded-lg p-4 mb-6">
         <h3 className="font-semibold mb-2">Shipping Address</h3>
         <p>{shippingAddress.fullName}</p>
         <p>{shippingAddress.address}</p>
         <p>
           {shippingAddress.city}, {shippingAddress.postalCode},{" "}
-          {shippingAddress.country}
+          {shippingAddress.email},{shippingAddress.phoneNumber}
         </p>
+        <select
+          id="state"
+          name="state"
+          value={shippingAddress.state}
+          onChange={(e) =>
+            setShippingAddress({ ...shippingAddress, state: e.target.value })
+          }
+          className="mt-1 p-2 border rounded-md w-full"
+          required
+        >
+          <option value="">Select State</option>
+          <option value="Lagos">Lagos</option>
+          <option value="Abuja">Abuja (FCT)</option>
+          <option value="Ogun">Ogun</option>
+          <option value="Oyo">Oyo</option>
+          <option value="Rivers">Rivers</option>
+          <option value="Others">Others</option>
+        </select>
       </div>
 
+      {/* Payment Method */}
       <div className="border rounded-lg p-4 mb-6">
         <h3 className="font-semibold mb-2">Payment Method</h3>
         <select
           value={paymentMethod}
-          onChange={(e) => setPaymentMethod(e.target.value)}
+          onChange={(e) => {
+            setPaymentMethod(e.target.value);
+            setShowBankDetails(e.target.value === "Bank Transfer");
+          }}
           className="border rounded p-2 w-full"
         >
-          <option value="Cash on Delivery">Cash on Delivery</option>
-          <option value="Paystack">Paystack</option>
-          <option value="Stripe">Stripe</option>
-          <option value="Flutterwave">Flutterwave</option>
+          <option value="BankTransfer">Bank Transfer</option>
+          {/* <option value="CashOnDelivery">Cash on Delivery</option> */}
+          {/* <option value="Paystack">Paystack</option> */}
+          {/* <option value="Flutterwave">Flutterwave</option> */}
         </select>
+
+        {showBankDetails && (
+          <div className="mt-4 bg-yellow-50 border border-yellow-200 p-3 rounded-lg">
+            <h4 className="font-semibold text-lg mb-1">
+              Bank Transfer Instructions
+            </h4>
+            <p className="text-sm mb-1">
+              Bank Name: <strong>Opay</strong>
+            </p>
+            <p className="text-sm mb-1">
+              Account Name: <strong>Mohammed Mariam Maris</strong>
+            </p>
+            <p className="text-sm mb-1">
+              Account Number: <strong>8133736331</strong>
+            </p>
+            <p className="text-sm text-gray-600 mt-2">
+              After transfer, kindly send your proof of payment to our WhatsApp
+              or email:
+              <br />
+              📧{" "}
+              <a
+                href="mailto:support@edutoys.com"
+                className="text-blue-600 underline"
+              >
+                support@edutoys.com
+              </a>
+              <br />
+              📱 WhatsApp:{" "}
+              <a
+                href="https://wa.me/2349116964464"
+                target="_blank"
+                rel="noreferrer"
+                className="text-blue-600 underline"
+              >
+                +234 801 234 5678
+              </a>
+            </p>
+          </div>
+        )}
       </div>
 
+      {/* Order Items */}
       <div className="border rounded-lg p-4 mb-6">
         <h3 className="font-semibold mb-2">Order Items</h3>
         {items.map(({ product, qty }) => (
           <div key={product._id} className="flex justify-between text-sm mb-1">
-            <span>{product.name} × {qty}</span>
+            <span>
+              {product.name} × {qty}
+            </span>
             <span>₦{(product.price * qty).toLocaleString()}</span>
           </div>
         ))}
@@ -105,6 +191,7 @@ function ConfirmOrder() {
         </div>
       </div>
 
+      {/* Button */}
       <button
         onClick={handlePlaceOrder}
         disabled={loading}
@@ -117,440 +204,3 @@ function ConfirmOrder() {
 }
 
 export default ConfirmOrder;
-
-
-// // src/pages/ConfirmOrder.jsx
-// import React, { useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useNavigate } from "react-router-dom";
-// import { selectCartItems, selectCartTotals, clearCart } from "../redux/cartSlice";
-// import { createOrder } from "../services/orderServices";
-// import { formatCurrency } from "../utils/formatCurrency";
-
-// function ConfirmOrder() {
-//   const dispatch = useDispatch();
-//   const navigate = useNavigate();
-//   const cartItems = useSelector(selectCartItems);
-//   const totals = useSelector(selectCartTotals);
-//   const [loading, setLoading] = useState(false);
-//   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
-//   const shippingAddress = JSON.parse(localStorage.getItem("shippingAddress")) || {};
-
-//   const handlePlaceOrder = async () => {
-//     if (!shippingAddress.fullName || !shippingAddress.address || !shippingAddress.city || !shippingAddress.postalCode || !shippingAddress.country) {
-//       alert("Shipping information is incomplete.");
-//       return;
-//     }
-
-//     try {
-//       setLoading(true);
-
-//       const orderData = {
-//         items: cartItems.map(({ product, qty }) => ({
-//           productId: product._id,
-//           qty,
-//         })),
-//         shippingAddress: {
-//           fullName: shippingAddress.fullName,
-//           address: shippingAddress.address,
-//           city: shippingAddress.city,
-//           postalCode: shippingAddress.postalCode,
-//           country: shippingAddress.country,
-//         },
-//         paymentMethod,
-//       };
-
-//       const res = await createOrder(orderData);
-//       console.log("✅ Order Created:", res);
-
-//       dispatch(clearCart());
-//       localStorage.removeItem("shippingAddress");
-
-//       navigate(`/order-success/${res.id || res._id}`);
-//     } catch (err) {
-//       console.error("❌ Failed to create order:", err);
-//       alert("Failed to create order. Please check your details and try again.");
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   return (
-//     <div className="p-6 max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-//       {/* Left: Shipping + Payment */}
-//       <div>
-//         <h2 className="text-xl font-semibold mb-4">Shipping Info</h2>
-//         <div className="space-y-2 border p-3 rounded">
-//           <p><strong>Name:</strong> {shippingAddress.fullName}</p>
-//           <p><strong>Address:</strong> {shippingAddress.address}</p>
-//           <p><strong>City:</strong> {shippingAddress.city}</p>
-//           <p><strong>Postal Code:</strong> {shippingAddress.postalCode}</p>
-//           <p><strong>Country:</strong> {shippingAddress.country}</p>
-//         </div>
-
-//         <h3 className="text-lg font-semibold mt-4 mb-2">Payment Method</h3>
-//         <select
-//           className="border p-2 w-full rounded"
-//           value={paymentMethod}
-//           onChange={(e) => setPaymentMethod(e.target.value)}
-//         >
-//           <option value="Cash on Delivery">Cash on Delivery</option>
-//           <option value="Paystack">Paystack</option>
-//           <option value="Stripe">Stripe</option>
-//           <option value="Flutterwave">Flutterwave</option>
-//         </select>
-//       </div>
-
-//       {/* Right: Order Summary */}
-//       <div>
-//         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-//         <div className="space-y-2 text-sm">
-//           {cartItems.map(({ product, qty }) => (
-//             <div key={product._id} className="flex justify-between">
-//               <span>{product.name} × {qty}</span>
-//               <span>{formatCurrency(product.price * qty)}</span>
-//             </div>
-//           ))}
-//           <hr className="my-2" />
-//           <p>Subtotal: {formatCurrency(totals.subTotal)}</p>
-//           <p>Shipping: {formatCurrency(totals.shippingFee)}</p>
-//           <p>Tax: {formatCurrency(totals.tax)}</p>
-//           <p className="font-semibold text-lg mt-2">
-//             Total: {formatCurrency(totals.total)}
-//           </p>
-//         </div>
-
-//         <button
-//           onClick={handlePlaceOrder}
-//           disabled={loading}
-//           className="mt-6 bg-green-600 text-white px-4 py-2 rounded w-full disabled:opacity-50"
-//         >
-//           {loading ? "Placing Order..." : "Place Order"}
-//         </button>
-//       </div>
-//     </div>
-//   );
-// }
-
-// export default ConfirmOrder;
-
-
-// // // src/pages/ConfirmOrder.jsx
-// // import React, { useState } from "react";
-// // import { useDispatch, useSelector } from "react-redux";
-// // import { useNavigate } from "react-router-dom";
-// // import { selectCartItems, selectCartTotals, clearCart } from "../redux/cartSlice";
-// // import { createOrder } from "../services/orderServices";
-// // import { formatCurrency } from "../utils/formatCurrency";
-
-// // function ConfirmOrder() {
-// //   const dispatch = useDispatch();
-// //   const navigate = useNavigate();
-// //   const cartItems = useSelector(selectCartItems);
-// //   const totals = useSelector(selectCartTotals);
-// //   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
-// //   const shippingAddress = JSON.parse(localStorage.getItem("shippingAddress"));
-
-// //   const handlePlaceOrder = async () => {
-// //     try {
-// //       const orderData = {
-// //         items: cartItems.map(({ product, qty }) => ({
-// //           productId: product._id,
-// //           qty,
-// //         })),
-// //         shippingAddress,
-// //         paymentMethod,
-// //       };
-
-// //       const res = await createOrder(orderData);
-// //       dispatch(clearCart());
-// //       localStorage.removeItem("shippingAddress");
-
-// //       navigate(`/order-success/${res.id}`);
-// //     } catch (err) {
-// //       console.error(err);
-// //       alert("Failed to create order");
-// //     }
-// //   };
-
-// //   return (
-// //     <div className="p-6 max-w-4xl mx-auto grid md:grid-cols-2 gap-6">
-// //       {/* Left: Shipping + Payment */}
-// //       <div>
-// //         <h2 className="text-xl font-semibold mb-4">Shipping Info</h2>
-// //         <div className="space-y-2 border p-3 rounded">
-// //           <p><strong>Name:</strong> {shippingAddress.fullName}</p>
-// //           <p><strong>Address:</strong> {shippingAddress.address}</p>
-// //           <p><strong>City:</strong> {shippingAddress.city}</p>
-// //           <p><strong>Country:</strong> {shippingAddress.country}</p>
-// //         </div>
-
-// //         <h3 className="text-lg font-semibold mt-4 mb-2">Payment Method</h3>
-// //         <select
-// //           className="border p-2 w-full rounded"
-// //           value={paymentMethod}
-// //           onChange={(e) => setPaymentMethod(e.target.value)}
-// //         >
-// //           <option value="Cash on Delivery">Cash on Delivery</option>
-// //           <option value="Paystack">Paystack</option>
-// //           <option value="Stripe">Stripe</option>
-// //           <option value="Flutterwave">Flutterwave</option>
-// //         </select>
-// //       </div>
-
-// //       {/* Right: Order Summary */}
-// //       <div>
-// //         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-// //         <div className="space-y-2 text-sm">
-// //           {cartItems.map(({ product, qty }) => (
-// //             <div key={product._id} className="flex justify-between">
-// //               <span>{product.name} × {qty}</span>
-// //               <span>{formatCurrency(product.price * qty)}</span>
-// //             </div>
-// //           ))}
-// //           <hr className="my-2" />
-// //           <p>Subtotal: {formatCurrency(totals.subTotal)}</p>
-// //           <p>Shipping: {formatCurrency(totals.shippingFee)}</p>
-// //           <p>Tax: {formatCurrency(totals.tax)}</p>
-// //           <p className="font-semibold text-lg mt-2">
-// //             Total: {formatCurrency(totals.total)}
-// //           </p>
-// //         </div>
-
-// //         <button
-// //           onClick={handlePlaceOrder}
-// //           className="mt-6 bg-green-600 text-white px-4 py-2 rounded w-full"
-// //         >
-// //           Place Order
-// //         </button>
-// //       </div>
-// //     </div>
-// //   );
-// // }
-
-// // export default ConfirmOrder;
-
-
-// // // // ConfirmOrder.jsx
-// // // import React, { useState } from "react";
-// // // import { useDispatch, useSelector } from "react-redux";
-// // // import { useNavigate } from "react-router-dom";
-// // // import { createOrder } from "../redux/orderSlice";
-// // // import { selectCartItems, selectCartTotals } from "../redux/cartSlice";
-
-// // // function ConfirmOrder() {
-// // //   const dispatch = useDispatch();
-// // //   const navigate = useNavigate();
-// // //   const items = useSelector(selectCartItems);
-// // //   const totals = useSelector(selectCartTotals);
-
-// // //   const [formData, setFormData] = useState({
-// // //     fullName: "",
-// // //     address: "",
-// // //     phone: "",
-// // //     paymentMethod: "COD",
-// // //   });
-
-// // //   const handleChange = (e) =>
-// // //     setFormData({ ...formData, [e.target.name]: e.target.value });
-
-// // //   const handleCheckout = async () => {
-// // //     const orderData = {
-// // //       items: items.map((i) => ({
-// // //         productId: i.product._id,
-// // //         qty: i.qty,
-// // //       })),
-// // //       shippingAddress: {
-// // //         fullName: formData.fullName,
-// // //         address: formData.address,
-// // //         phone: formData.phone,
-// // //       },
-// // //       paymentMethod: formData.paymentMethod,
-// // //     };
-
-// // //     const result = await dispatch(createOrder(orderData));
-// // //     if (createOrder.fulfilled.match(result)) {
-// // //       navigate(`/order-success/${result.payload.id}`);
-// // //     } else {
-// // //       alert("Order creation failed!");
-// // //     }
-// // //   };
-
-// // //   return (
-// // //     <div className="p-6 grid md:grid-cols-2 gap-6">
-// // //       {/* Left */}
-// // //       <div>
-// // //         <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
-// // //         <input
-// // //           name="fullName"
-// // //           placeholder="Full Name"
-// // //           className="border w-full mb-3 p-2"
-// // //           onChange={handleChange}
-// // //         />
-// // //         <input
-// // //           name="address"
-// // //           placeholder="Address"
-// // //           className="border w-full mb-3 p-2"
-// // //           onChange={handleChange}
-// // //         />
-// // //         <input
-// // //           name="phone"
-// // //           placeholder="Phone Number"
-// // //           className="border w-full mb-3 p-2"
-// // //           onChange={handleChange}
-// // //         />
-
-// // //         <h3 className="text-lg font-semibold mt-4 mb-2">Payment Method</h3>
-// // //         <select
-// // //           name="paymentMethod"
-// // //           value={formData.paymentMethod}
-// // //           onChange={handleChange}
-// // //           className="border w-full p-2"
-// // //         >
-// // //           <option value="COD">Cash on Delivery</option>
-// // //           <option value="Card">Card</option>
-// // //           <option value="Transfer">Bank Transfer</option>
-// // //         </select>
-// // //       </div>
-
-// // //       {/* Right */}
-// // //       <div>
-// // //         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-// // //         {items.map((i) => (
-// // //           <div key={i.product._id} className="flex justify-between py-1">
-// // //             <p>{i.product.name} × {i.qty}</p>
-// // //             <p>₦{(i.product.price * i.qty).toLocaleString()}</p>
-// // //           </div>
-// // //         ))}
-// // //         <div className="mt-3 font-medium">
-// // //           <p>Subtotal: ₦{totals.subTotal.toLocaleString()}</p>
-// // //           <p>Shipping: ₦{totals.shippingFee}</p>
-// // //           <p>Tax: ₦{totals.tax}</p>
-// // //           <p className="text-lg font-semibold">
-// // //             Total: ₦{totals.total.toLocaleString()}
-// // //           </p>
-// // //         </div>
-
-// // //         <button
-// // //           onClick={handleCheckout}
-// // //           className="mt-6 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-// // //         >
-// // //           Place Order
-// // //         </button>
-// // //       </div>
-// // //     </div>
-// // //   );
-// // // }
-
-// // // export default ConfirmOrder;
-
-
-// // // // import React, { useState } from "react";
-// // // // import { useDispatch, useSelector } from "react-redux";
-// // // // import { useNavigate } from "react-router-dom";
-// // // // import { createOrder } from "../redux/orderSlice";
-// // // // import { selectCartItems, selectCartTotals } from "../redux/cartSlice";
-
-// // // // function ConfirmOrder() {
-// // // //   const dispatch = useDispatch();
-// // // //   const navigate = useNavigate();
-// // // //   const items = useSelector(selectCartItems);
-// // // //   const totals = useSelector(selectCartTotals);
-
-// // // //   const [formData, setFormData] = useState({
-// // // //     fullName: "",
-// // // //     address: "",
-// // // //     phone: "",
-// // // //     paymentMethod: "COD",
-// // // //   });
-
-// // // //   const handleChange = (e) =>
-// // // //     setFormData({ ...formData, [e.target.name]: e.target.value });
-
-// // // //   const handleCheckout = async () => {
-// // // //     const orderData = {
-// // // //       shippingInfo: {
-// // // //         fullName: formData.fullName,
-// // // //         address: formData.address,
-// // // //         phone: formData.phone,
-// // // //       },
-// // // //       paymentMethod: formData.paymentMethod,
-// // // //       items: items.map((i) => ({
-// // // //         product: i.product._id,
-// // // //         qty: i.qty,
-// // // //       })),
-// // // //       totalPrice: totals.total,
-// // // //     };
-
-// // // //     const resultAction =  dispatch(createOrder(orderData));
-// // // //     if (createOrder.fulfilled.match(resultAction)) {
-// // // //       const newOrder = resultAction.payload;
-// // // //       navigate(`/order-success/${newOrder._id}`);
-// // // //     }
-// // // //   };
-
-// // // //   return (
-// // // //     <div className="p-6 grid md:grid-cols-2 gap-6">
-// // // //       <div>
-// // // //         <h2 className="text-xl font-semibold mb-4">Shipping Information</h2>
-// // // //         <input
-// // // //           name="fullName"
-// // // //           placeholder="Full Name"
-// // // //           className="border w-full mb-3 p-2"
-// // // //           onChange={handleChange}
-// // // //         />
-// // // //         <input
-// // // //           name="address"
-// // // //           placeholder="Address"
-// // // //           className="border w-full mb-3 p-2"
-// // // //           onChange={handleChange}
-// // // //         />
-// // // //         <input
-// // // //           name="phone"
-// // // //           placeholder="Phone Number"
-// // // //           className="border w-full mb-3 p-2"
-// // // //           onChange={handleChange}
-// // // //         />
-
-// // // //         <h3 className="text-lg font-semibold mt-4 mb-2">Payment Method</h3>
-// // // //         <select
-// // // //           name="paymentMethod"
-// // // //           value={formData.paymentMethod}
-// // // //           onChange={handleChange}
-// // // //           className="border w-full p-2"
-// // // //         >
-// // // //           <option value="COD">Cash on Delivery</option>
-// // // //           <option value="Card">Card</option>
-// // // //           <option value="Transfer">Bank Transfer</option>
-// // // //         </select>
-// // // //       </div>
-
-// // // //       <div>
-// // // //         <h2 className="text-xl font-semibold mb-4">Order Summary</h2>
-// // // //         {items.map((i) => (
-// // // //           <div key={i.product._id} className="flex justify-between py-1">
-// // // //             <p>{i.product.name} × {i.qty}</p>
-// // // //             <p>₦{(i.product.price * i.qty).toLocaleString()}</p>
-// // // //           </div>
-// // // //         ))}
-// // // //         <div className="mt-3 font-medium">
-// // // //           <p>Subtotal: ₦{totals.subTotal.toLocaleString()}</p>
-// // // //           <p>Shipping: ₦{totals.shippingFee}</p>
-// // // //           <p>Tax: ₦{totals.tax}</p>
-// // // //           <p className="text-lg font-semibold">
-// // // //             Total: ₦{totals.total.toLocaleString()}
-// // // //           </p>
-// // // //         </div>
-
-// // // //         <button
-// // // //           onClick={handleCheckout}
-// // // //           className="mt-6 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
-// // // //         >
-// // // //           Checkout
-// // // //         </button>
-// // // //       </div>
-// // // //     </div>
-// // // //   );
-// // // // }
-
-// // // // export default ConfirmOrder;

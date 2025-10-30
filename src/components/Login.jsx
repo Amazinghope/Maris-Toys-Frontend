@@ -1,17 +1,19 @@
-import { FaEnvelope } from "react-icons/fa";
-import { FaLock } from "react-icons/fa";
+import { FaEnvelope, FaLock } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState, useEffect } from "react";
 import { loginuser } from "../redux/loginSlice";
 import { Loader } from "lucide-react";
 import { toast } from "react-toastify";
+import API from "../api";
 
 const Login = () => {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { loading, error, isVerified, tempToken } = useSelector((state) => state.login);
-  // const [loginCredentials, setloginCredentials] = useState()
+  const { loading, error, isVerified, tempToken, user } = useSelector(
+    (state) => state.login
+  );
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -28,42 +30,76 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginuser(formData));
   };
-    const resetForm = () => {
-    setFormData({
-      email: "",
-      password: "",
-    });
+
+  const resetForm = () => {
+    setFormData({ email: "", password: "" });
   };
 
+  // Add logout handler (calls backend to clear cookies)
+  const handleLogout = async () => {
+    try {
+      await API.post("/auth/log-out", {
+        method: "POST",
+        credentials: "include",
+      });
+      localStorage.removeItem("tempToken");
+      toast.success("Logged out successfully");
+    } catch (error) {
+      toast.error("Logout failed");
+    }
+  };
+
+  // Clear any old temporary tokens on mount
   useEffect(() => {
-  const tempToken = localStorage.getItem("tempToken");
-  if (!tempToken) {
-    // ensure user can go to login page freely
     localStorage.removeItem("tempToken");
-  }
-}, []);
+  }, []);
 
-
-   useEffect(() => {
+  // Handle successful login (OTP step)
+  useEffect(() => {
     if (tempToken) {
-      toast.success("Redirecting...");
+      localStorage.setItem("tempToken", tempToken);
+      toast.success("Redirecting to OTP verification...");
       resetForm();
+
       const timer = setTimeout(() => {
         navigate("/verify-otp");
-      }, 3000);
+      }, 2000);
+
       return () => clearTimeout(timer);
     }
 
-     
-    if (error) {
-      toast.error(error);
-    }
+    if (error) toast.error(error);
   }, [error, tempToken, navigate]);
 
+  // ✅ Fixed: Check if already logged in on mount (handles invalid JSON safely)
+  useEffect(() => {
+  const checkSession = async () => {
+    try {
+      const response = await API.get("/auth/me", {
+        withCredentials: true, // important for cookies
+      });
 
+      const data = response.data;
 
+      if (data?.success && data?.user) {
+        const { role } = data.user;
+        if (role === "admin") navigate("/admin-db");
+        else navigate("/users-db");
+      } else {
+        console.warn("No valid user found in session");
+      }
+    } catch (error) {
+      console.error("Session check failed:", error);
+    }
+  };
+
+  checkSession();
+}, [navigate]);
+
+  
   return (
     <div className="flex mt-10 mx-auto justify-around">
+      {/* Left image */}
       <div className="w-[45%]">
         <img
           src="https://res.cloudinary.com/dd9mhvnbt/image/upload/v1759432293/block-play_mewnl3.png"
@@ -71,17 +107,19 @@ const Login = () => {
           className="opacity-65"
         />
       </div>
-      <div className="border-2 w-[45%] p-4">
-        <h1 className="text-xl font-bold mb-2">Welcome Back</h1>
-        <form
-        onSubmit={handleSubmit}
-        >
+
+      {/* Login Form */}
+      <div className="border-2 w-[45%] p-4 rounded-2xl shadow-lg">
+        <h1 className="text-xl font-bold mb-2 text-center">Welcome Back</h1>
+
+        <form onSubmit={handleSubmit}>
+          {/* Email */}
           <label htmlFor="email" className="font-bold mx-2">
             Email <span className="text-red-600">*</span>
           </label>
           <div className="relative">
             <input
-              className="border-2 m-2 w-[90%] py-2 px-10"
+              className="border-2 m-2 w-[90%] py-2 px-10 rounded-lg"
               id="email"
               type="email"
               name="email"
@@ -93,12 +131,13 @@ const Login = () => {
             <FaEnvelope className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
           </div>
 
+          {/* Password */}
           <label htmlFor="password" className="font-bold mx-2">
             Password <span className="text-red-600">*</span>
           </label>
           <div className="relative">
             <input
-              className="border-2 m-2 w-[90%] py-2 px-10"
+              className="border-2 m-2 w-[90%] py-2 px-10 rounded-lg"
               id="password"
               type="password"
               name="password"
@@ -110,6 +149,7 @@ const Login = () => {
             <FaLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
           </div>
 
+          {/* Options */}
           <div className="flex justify-between items-center">
             <label className="flex items-center m-3 cursor-pointer">
               <input type="checkbox" className="mr-2" />
@@ -120,24 +160,32 @@ const Login = () => {
             </p>
           </div>
 
-          {error && <p className="text-2xl text-red-600 font-bold">{error}</p>}
+          {/* Submit */}
           <button
             className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
             type="submit"
-            disabled ={loading}
-           >
-            {loading ? <Loader className="mx-auto animate-spin"/> : "Log in"}
-            
+            disabled={loading}
+          >
+            {loading ? <Loader className="mx-auto animate-spin" /> : "Log in"}
           </button>
 
           <p className="text-center">Or</p>
 
+          {/* Google Login Placeholder */}
           <button
             className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
             type="button"
           >
-            {/* <FaGoogle className="inline mr-2" /> */}
             Log in with Google
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="border-2 m-2 w-[90%] p-2 bg-red-600 text-white font-bold rounded-full hover:bg-red-700"
+            type="button"
+          >
+            Logout (Clear Session)
           </button>
 
           <p className="m-3 text-center">
@@ -150,92 +198,14 @@ const Login = () => {
             </Link>
           </p>
         </form>
-        {isVerified && <p className="text-center text-green-800 font-bold">Login Successful</p>}
+
+        {isVerified && (
+          <p className="text-center text-green-800 font-bold">
+            Login Successful
+          </p>
+        )}
       </div>
     </div>
-
-    // <div className="flex mt-10 mx-auto justify-around">
-    //   <div className="w-[45%]">
-    //     <img src="/assets/block-play.png" alt="block play" className="opacity-65" />
-    //     {/* <img src={heroImg} alt="Hero-Img" className="opacity-65" /> */}
-    //   </div>
-    //   <div className="border-2 w-[45%]  p-4">
-    //     <h1 className="text-xl font-bold mb-2">Welcome Back</h1>
-    //     <form>
-    //       <p className="font-bold mx-2">
-    //           {" "}
-    //           Email <span className="text-red-600">*</span>
-    //         </p>
-
-    //       <div className="relative">
-    //         <input
-    //           className="border-2 m-2 w-[90%] py-2 px-10"
-    //           type="email"
-    //           name="email"
-    //           placeholder="Enter Email"
-    //           required
-    //         />
-    //         <FaEnvelope className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
-    //       </div>
-
-    //      <p className="font-bold mx-2">
-    //           {" "}
-    //           Password <span className="text-red-600">*</span>
-    //         </p>
-
-    //       <div className="relative">
-    //         <input
-    //           className="border-2 m-2 w-[90%] py-2 px-10  "
-    //           type="password"
-    //           name="password"
-    //           placeholder=" Password"
-    //           required
-    //         />
-    //         <FaLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
-    //       </div>
-
-    //       <div className="flex gap-60">
-    //         <span className="flex">
-    //           {" "}
-    //           <input
-    //             type="checkbox"
-    //             className="border-2 m-3 text-amber-600"
-    //           />{" "}
-    //           <p className="font-bold mt-1">Remember Me</p>
-    //         </span>
-    //         <p className="font-bold mt-1 text-amber-600 hover:border-b-4">
-    //           Forgot Password?
-    //         </p>
-    //       </div>
-    //       <button
-    //         className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
-    //         type="submit"
-    //         // disabled={loading}
-    //       >
-    //         Log in
-    //         {/* {loading ? <Loader className="animate-spin mx-auto" /> : "Login"} */}
-    //       </button>
-    //       <p className="text-center">Or</p>
-
-    //       <button
-    //         className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
-    //         type="button"
-    //         // disabled={loading}
-    //       >
-    //         <FaGoogle/>
-    //         Log in with Google
-    //         {/* {loading ? <Loader className="animate-spin mx-auto" /> : "Login"} */}
-    //       </button>
-
-    //       <p className="m-3 text-center">
-    //         Don't have an account?{" "}
-    //         <span className="font-bold mt-1 text-amber-600 hover:border-b-4">
-    //          <Link to= '/register'> Register now</Link>
-    //         </span>
-    //       </p>
-    //     </form>{" "}
-    //   </div>
-    // </div>
   );
 };
 

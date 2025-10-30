@@ -1,4 +1,4 @@
-// src/redux/loginSlice.js
+
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import API from "../api"; // your axios instance
 
@@ -175,6 +175,7 @@ const loginSlice = createSlice({
         state.isVerified = true;
         // token is managed by cookie (server). If you also return token in body, set it here:
         state.token = true
+        console.log("✅ Redux stored user:", state.user);
       })
       .addCase(verifyOtp.rejected, (state, action) => {
         state.loading = false;
@@ -201,109 +202,3 @@ export const { logout, clearAuthMessage } = loginSlice.actions;
 export default loginSlice.reducer;
 
 
-
-// import API from "../api";
-
-// export const loginuser = createAsyncThunk(
-//     "auth/login",
-//     async(credentials, {rejectWithValue}) =>{
-//         try {
-//           const res = await API.post("/auth/login", credentials)
-//         //  return res.data.user
-//           // Otp required
-//       if (res.data?.status === "Success" && res.data?.tempToken) {
-//         localStorage.setItem("tempToken", res.data.tempToken);
-//         return {
-//           otpPending: true,
-//           tempToken: res.data.tempToken,
-//           message: res.data?.message || "Otp sent to your email",
-//         };
-//       }
-//       return rejectWithValue("Unexpected response from server");
-
-//         } catch (error) {
-//            return rejectWithValue(error.res.message || "Invalid Credentials") 
-//         }
-//     }
-// )
-
-// // Otp Verification
-
-// export const verifyOtp = createAsyncThunk(
-//    "auth/verify-otp",
-//    async({otp}, {rejectWithValue}) =>{
-//     try {
-//         const tempToken = localStorage.getItem('tempToken')
-//         if(!tempToken)  return rejectWithValue("Session expired. please log in again.")
-//         const res = await API.post('/auth/verify-otp', 
-//     {otp},
-//     {credentials}
-//   )
-        
-//     } catch (error) {
-        
-//     }
-//    }
-// )
-
-// const loginSlice = createSlice({
-//     name: "login",
-//     initialState: {
-//         user: null,
-//         loading: false,
-//         isVerified: false,
-//         error: false,
-//         otpPending: false,
-//         email: null,
-//         token: cookieStore.get('token') || null,
-//         tempToken: cookieStore.get('tempToken') || null
-
-//     },
-//     reducers:{
-//     logout: (state) =>{
-//     state.user = null,
-//     state.isVerified = false
-//     },
-//     clearAuthMessage: (state) => {
-//       state.message = null;
-//       state.error = null;
-//     },
-
-//     },
-//    extraReducers:(builder) => {
-//     builder
-//     .addCase(loginuser.pending, (state)=>{
-//         state.loading = true
-//         state.error = null
-//     })
-//     .addCase(loginuser.fulfilled, (state, action)=>{
-//         state.loading = false
-//         state.user = action.payload
-//         state.isVerified = true
-//     })
-//     .addCase(loginuser.rejected, (state, action)=>{
-//         state.loading = false
-//         state.error = action.payload
-//     })
-//     // otp verification build
-//     .addCase(verifyOtp.pending, (state)=>{
-//         state.loading = true
-//         state.error = null
-//         state.message = null
-//     })
-//     .addCase(verifyOtp.fulfilled, (state, action)=>{
-//         state.loading = false
-//         state.tempToken = null
-//         state.otpPending = false
-//         state.token = action.payload.token
-//         state.message = action.payload.message 
-//     })
-//     .addCase(verifyOtp.rejected, (state, action)=>{
-//         state.loading = false
-//         state.error = action.payload
-//     })
-//    }
-// },
-//     )
-//     export const {logout, clearAuthMessage} = loginSlice.actions
-//     export default loginSlice.reducer

@@ -13,27 +13,35 @@ export default function VerifyOtp() {
         (state) => state.login
     );
 
-    // ✅ Handle navigation once OTP is verified
-    useEffect(() => {
-        if ( user) {
-            toast.success("OTP verified! Redirecting...");
-            setTimeout(() => {
-                if (user.role === "admin") navigate("/admin-db");
-                else navigate("/");
-            }, 1000);
-        }
-    }, [ user, navigate]);
-
+    // Handle navigation once OTP is verified
 //     useEffect(() => {
-//   const tempToken = localStorage.getItem("tempToken");
-//   if (!tempToken) {
-//     navigate("/login");
+//   if (user) {
+//     toast.success("OTP verified! Redirecting...");
+//     setTimeout(() => {
+//       // No need to store in localStorage—backend handles cookies
+//       if (user.role === "admin") {
+//         navigate("/admin-db");
+//       } else {
+//         navigate("/users-db");
+//       }
+//     }, 1000);
 //   }
-// }, [navigate]);
+// }, [user, navigate]); 
+useEffect(() => {
+  if (user && user.role) {
+    toast.success("OTP verified! Redirecting...");
 
 
-    // ✅ Show toast for error/success messages
-    useEffect(() => {
+    const target = user.role === "admin" ? "/admin-db" : "/users-db";
+    setTimeout(()=>{
+     navigate(target, { replace: true });
+
+    }, 1000)
+      }
+}, [user, navigate]);
+
+
+     useEffect(() => {
         if (error) toast.error(error);
         if (message && !otpPending) toast.success(message);
         return () => {

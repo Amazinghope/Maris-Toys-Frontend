@@ -1,12 +1,14 @@
 import { FaEnvelope, FaLock } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useState } from "react";
 import { registerUser } from "../redux/registerSlice";
+import { toast } from "react-toastify";
 
 const Register = () => {
   const dispatch = useDispatch();
-  const { loading, error, user } = useSelector((state) => state.reg);
+  const navigate = useNavigate();
+  const { loading } = useSelector((state) => state.reg);
 
   const [formData, setFormData] = useState({
     name: "",
@@ -21,138 +23,139 @@ const Register = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    dispatch(registerUser(formData));
+    try {
+      await dispatch(registerUser(formData)).unwrap();
+      toast.success("Registration successful! Please log in.");
+      navigate("/login");
+    } catch (err) {
+      toast.error(err.message || "Registration failed");
+    }
   };
 
   return (
-    <div className="flex mt-10 mx-auto justify-around">
-      <div className="w-[45%]">
+    <div className="min-h-screen flex flex-col md:flex-row items-center justify-center bg-gradient-to-r from-blue-50 to-amber-50 p-4">
+      
+      {/* Left Image */}
+      <div className="hidden md:flex md:w-1/2 justify-center">
         <img
           src="/assets/block-play.png"
           alt="block play"
-          className="opacity-65"
+          className="max-w-xs md:max-w-md opacity-90 rounded-lg shadow-lg"
         />
       </div>
 
-      <div className="border-2 w-[45%] p-4 rounded-2xl shadow-md">
-        <h1 className="text-xl font-bold mb-4">
-          Join Us To Explore The World of Children Fun!!
+      {/* Right Form */}
+      <div className="w-full md:w-1/2 bg-white p-6 md:p-10 rounded-3xl shadow-xl">
+        <h1 className="text-2xl md:text-3xl font-bold mb-6 text-center text-blue-900">
+          Join Us & Explore the World of Children Fun!
         </h1>
 
-        <form onSubmit={handleSubmit}>
-          {/* Full Name & Username */}
-          <div className="flex justify-start gap-44 mx-2 font-bold">
-            <p>
-              Full Name <span className="text-red-600">*</span>
-            </p>
-            <p>
-              Username <span className="text-red-600">*</span>
-            </p>
-          </div>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {/* Full Name */}
+          <div className="flex flex-col md:flex-row gap-4">
+            <div className="flex-1 flex flex-col">
+              <label className="font-semibold mb-1">Full Name <span className="text-red-600">*</span></label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                placeholder="Full Name"
+                required
+                className="border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+            </div>
 
-          <div className="flex">
-            <input
-              className="border-2 m-2 w-[44%] p-2"
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Full Name"
-              required
-            />
-
-            <input
-              className="border-2 m-2 w-[44%] p-2"
-              type="text"
-              name="username"
-              value={formData.username}
-              onChange={handleChange}
-              placeholder="Username"
-              required
-            />
+            {/* Username */}
+            <div className="flex-1 flex flex-col">
+              <label className="font-semibold mb-1">Username <span className="text-red-600">*</span></label>
+              <input
+                type="text"
+                name="username"
+                value={formData.username}
+                onChange={handleChange}
+                placeholder="Username"
+                required
+                className="border-2 border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+            </div>
           </div>
 
           {/* Email */}
-          <p className="font-bold mx-2">
-            Email <span className="text-red-600">*</span>
-          </p>
-          <div className="relative">
-            <FaEnvelope className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            <input
-              className="border-2 m-2 w-[90%] p-2 px-10"
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Enter Email"
-              required
-            />
+          <div className="relative flex flex-col">
+            <label className="font-semibold mb-1">Email <span className="text-red-600">*</span></label>
+            <div className="relative">
+              <FaEnvelope className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="Enter Email"
+                required
+                className="border-2 border-gray-300 rounded-lg p-3 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+            </div>
           </div>
 
           {/* Password */}
-          <p className="font-bold mx-2">
-            Password <span className="text-red-600">*</span>
-          </p>
-          <div className="relative">
-            <FaLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
-            <input
-              className="border-2 m-2 w-[90%] p-2 px-10"
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Password"
-              required
-            />
+          <div className="relative flex flex-col">
+            <label className="font-semibold mb-1">Password <span className="text-red-600">*</span></label>
+            <div className="relative">
+              <FaLock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter Password"
+                required
+                className="border-2 border-gray-300 rounded-lg p-3 pl-10 w-full focus:outline-none focus:ring-2 focus:ring-amber-400 transition"
+              />
+            </div>
           </div>
 
           {/* Terms */}
-          <p className="font-bold mx-3 text-sm leading-6">
-            By signing up with us you agree to our{" "}
-            <Link className="text-amber-600 font-bold hover:border-b-4">
+          <p className="text-sm text-gray-600">
+            By signing up you agree to our{" "}
+            <Link className="text-amber-600 font-semibold hover:underline">
               Terms & Conditions
             </Link>{" "}
             and{" "}
-            <Link className="text-amber-600 font-bold hover:border-b-4">
+            <Link className="text-amber-600 font-semibold hover:underline">
               Privacy Policy
-            </Link>
+            </Link>.
           </p>
 
           {/* Register Button */}
           <button
-            className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
             type="submit"
             disabled={loading}
+            className="w-full bg-blue-600 hover:bg-amber-500 text-white font-bold py-3 rounded-full transition disabled:opacity-50"
           >
             {loading ? "Registering..." : "Register"}
           </button>
 
-          <p className="text-center">Or</p>
+          {/* Or Divider */}
+          <div className="text-center text-gray-400 my-2">Or</div>
 
           {/* Google Sign Up */}
           <button
-            className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-red-600 text-white font-bold rounded-full"
             type="button"
+            className="w-full bg-red-600 hover:bg-red-500 text-white font-bold py-3 rounded-full transition"
           >
             Sign up with Google
           </button>
 
           {/* Login Redirect */}
-          <p className="m-3 text-center">
+          <p className="text-center mt-4 text-gray-700">
             Already have an account?{" "}
-            <span className="font-bold mt-1 text-amber-600 hover:border-b-4">
-              <Link to="/login">Log in now</Link>
-            </span>
+            <Link className="text-amber-600 font-bold hover:underline" to="/login">
+              Log in now
+            </Link>
           </p>
-
-          {/* Error Display */}
-          {error && (
-            <p className="text-center text-red-600 font-semibold mt-2">
-              {error}
-            </p>
-          )}
         </form>
       </div>
     </div>
@@ -160,148 +163,3 @@ const Register = () => {
 };
 
 export default Register;
-
-
-// import { FaEnvelope } from "react-icons/fa";
-// import { FaLock } from "react-icons/fa";
-// import { Link } from "react-router-dom";
-// import { useDispatch, useSelector } from "react-redux";
-// import { useState } from "react";
-// import { registerUser } from "../redux/registerSlice"; 
-
-// const Register = () => {
-//   const dispatch = useDispatch()
-//   const {loading, error, user} = useSelector((state) => state.reg)
-//   const [password, setPassword] = useState('')
- 
-//   const [formData, setFormData] = useState({
-//     name: '',
-//     username: '',
-//     email: '',
-//     password: '',
-//     role: 'regular'
-
-//   })
-
-//   const handleChange = (e) =>{
-//     setFormData(()=>{})
-//   }
-
-//   return (
-//     <div className="flex mt-10 mx-auto justify-around">
-//       <div className="w-[45%]">
-//         <img src="/assets/block-play.png" alt="block play" className="opacity-65" />
-//         {/* <img src={heroImg} alt="Hero-Img" className="opacity-65" /> */}
-//       </div>
-//       <div className="border-2 w-[45%]  p-4">
-//         <h1 className="text-xl font-bold mb-2">
-//           Join Us To Explore The World of Children Fun!!
-//         </h1>
-//         <form>
-//           <div className="flex justify-start gap-44 mx-2 font-bold">
-//             <p>
-              
-//              Full Name <span className="text-red-600">*</span>{" "}
-//             </p>
-//             <p>
-              
-//               Username <span className="text-red-600">*</span>
-//             </p>
-//           </div>
-          
-//           <div className="flex">
-//             <input
-//               className="border-2 m-2 w-[44%] p-2 "
-//               type="text"
-//               name="text"
-//               placeholder="Full Name"
-//               required
-//             />
-
-//             <input
-//               className="border-2 m-2 w-[44%] p-2 "
-//               type="text"
-//               name="text"
-//               placeholder="Username"
-//               required
-//             />
-
-//             {/* <FaEnvelope className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" /> */}
-//           </div>
-
-//          <p className="font-bold mx-2">
-              
-//               Email <span className="text-red-600">*</span>
-//             </p>
-
-//           <div className="relative">
-//             <input
-//               className="border-2 m-2 w-[90%] p-2 px-10"
-//               type="email"
-//               name="email"
-//               placeholder="Enter Email"
-//               required
-//             />
-//             <FaEnvelope className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
-//           </div>
-
-//           <p className="font-bold mx-2">
-              
-//               Password <span className="text-red-600">*</span>
-//             </p>
-
-//           <div className="relative">
-//             <input
-//               className="border-2 m-2 w-[90%] p-2 px-10"
-//               type="password"
-//               name="password"
-//               placeholder=" Password"
-//               required
-//             />
-//             <FaLock className="absolute left-5 top-1/2 transform -translate-y-1/2 text-gray-500" />
-//           </div>
-
-          
-//           <p className="font-bold mx-3">
-//             By signing up with us you agree to our {}
-//             <Link className="text-amber-600 font-bold hover:border-b-4">
-//               Terms & Condition
-//             </Link>
-//             <br /> and{" "}
-//             <Link className="text-amber-600 font-bold hover:border-b-4">
-//               Privacy Policy
-//             </Link>
-//           </p>
-//           <button
-//             className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
-//             type="submit"
-//             // disabled={loading}
-//           >
-//             Register
-//             {/* {loading ? <Loader className="animate-spin mx-auto" /> : "Login"} */}
-//           </button>
-//           <p className="text-center">Or</p>
-
-//           <button
-//             className="border-2 m-2 hover:bg-amber-600 w-[90%] p-2 bg-blue-600 text-white font-bold rounded-full"
-//             type="submit"
-//             // disabled={loading}
-//           >
-//             {/* <FaGoogle/> */}
-//             Sign up with Google
-//             {/* {loading ? <Loader className="animate-spin mx-auto" /> : "Login"} */}
-//           </button>
-
-//           <p className="m-3 text-center">
-//             Already have an account?{" "}
-//             <span className="font-bold mt-1 text-amber-600 hover:border-b-4">
-//               <Link to="/login">Log in now</Link>
-//             </span>
-//           </p>
-//         </form>{" "}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Register;
