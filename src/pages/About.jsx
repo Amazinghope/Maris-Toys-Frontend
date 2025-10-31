@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 const AboutUs = () => {
   const images = [
@@ -10,6 +11,7 @@ const AboutUs = () => {
   ];
 
   const [currentImage, setCurrentImage] = useState(0);
+  const dispatch = useDispatch()
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -137,9 +139,12 @@ const AboutUs = () => {
             Ready to explore our playful world? Find the perfect toy for your
             little adventurers today!
           </p>
-          <button className="bg-yellow-400 hover:bg-yellow-500 text-amber-900 font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105">
+          <Link
+          to="/catalog"
+           className="bg-yellow-400 hover:bg-yellow-500 text-amber-900 font-bold py-3 px-8 rounded-full transition-transform transform hover:scale-105"
+           >
             Shop Now
-          </button>
+          </Link>
         </div>
       </div>
     </div>
