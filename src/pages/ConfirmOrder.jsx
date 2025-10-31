@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { toast } from "react-toastify";
 import {
   selectCartItems,
@@ -155,15 +156,15 @@ function ConfirmOrder() {
               After transfer, kindly send your proof of payment to our WhatsApp
               or email:
               <br />
-              📧{" "}
+              <FaEnvelope/>{" "}
               <a
                 href="mariseducreativeservicesandmore@gmail.com"
                 className="text-blue-600 underline"
               >
-                support@edutoys.com
+                mariseducreativeservicesandmore.com
               </a>
               <br />
-              📱 WhatsApp:{" "}
+              <FaWhatsapp/> WhatsApp:{" "}
               <a
                 href="https://wa.me/2349116964464"
                 target="_blank"
