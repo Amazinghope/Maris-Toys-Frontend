@@ -17,7 +17,7 @@ function ConfirmOrder() {
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Bank Transfer");
   const [showBankDetails, setShowBankDetails] = useState(true);
-  // const { user } = useSelector((state) => state.login);
+  const { user } = useSelector((state) => state.login);
   const [shippingAddress, setShippingAddress] = useState({
     fullName: "",
     address: "",
@@ -34,10 +34,10 @@ function ConfirmOrder() {
   }, []);
 
   const handlePlaceOrder = async () => {
-    // if (!user) {
-    //   toast.warning("Please log in to place your order.");
-    //   navigate("/login");
-    // }
+    if (!user) {
+      toast.warning("Please log in to place your order.");
+      navigate("/login");
+    }
     if (!shippingAddress) {
       toast.error(
         "Shipping address not found. Please go back and enter details."
