@@ -36,7 +36,9 @@ function ConfirmOrder() {
   const handlePlaceOrder = async () => {
     if (!user) {
       toast.warning("Please log in to place your order.");
-      navigate("/login");
+      // navigate("/login");
+       navigate(`/login?redirect=${encodeURIComponent("/confirm-order")}`);
+      return
     }
     if (!shippingAddress) {
       toast.error(
@@ -86,7 +88,14 @@ function ConfirmOrder() {
       if (orderId) navigate(`/order-success/${orderId}`);
     } catch (error) {
       console.error("❌ Failed to place order:", error);
-      toast.error("Failed to place order. Please login to try again.");
+      // toast.error("Failed to place order. Please login to try again.");
+      // ✅ Step 6: Handle 401 or general errors
+      if (error.response?.status === 401) {
+        toast.warning("Session expired. Please log in again.");
+        navigate(`/login?redirect=${encodeURIComponent("/confirm-order")}`);
+      } else {
+        toast.error("Failed to place order. Please try again later.");
+      }
     } finally {
       setLoading(false);
     }
