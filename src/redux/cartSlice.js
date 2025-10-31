@@ -64,7 +64,7 @@ export const selectCartTotals = createSelector(
   [selectCartItems, (_, shippingAddress) => shippingAddress],
   (items, shippingAddress) => {
     const subTotal = items.reduce(
-      (sum, item) => sum + item.product.price * item.qty, 0 );
+      (sum, item) => sum + item.product.price * item.qty, 0  );
 
     const tax = Math.round(subTotal * 0.075);
 

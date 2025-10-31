@@ -14,23 +14,34 @@ function ConfirmOrder() {
   const navigate = useNavigate();
   const items = useSelector(selectCartItems);
   const total = useSelector(selectCartTotals);
-  const [shippingAddress, setShippingAddress] = useState(null);
   const [loading, setLoading] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("Bank Transfer");
   const [showBankDetails, setShowBankDetails] = useState(true);
-  const {user} = useSelector((state)=> state.login)
+  // const { user } = useSelector((state) => state.login);
+  const [shippingAddress, setShippingAddress] = useState({
+    fullName: "",
+    address: "",
+    city: "",
+    postalCode: "",
+    email: "",
+    phone: "",
+    state: "",
+  });
+
   useEffect(() => {
     const savedAddress = localStorage.getItem("shippingAddress");
     if (savedAddress) setShippingAddress(JSON.parse(savedAddress));
   }, []);
 
   const handlePlaceOrder = async () => {
-    if(!user){
-      toast.warning("Please log in to place your order.")
-      navigate('/login')
-    }
+    // if (!user) {
+    //   toast.warning("Please log in to place your order.");
+    //   navigate("/login");
+    // }
     if (!shippingAddress) {
-      toast.error("Shipping address not found. Please go back and enter details.");
+      toast.error(
+        "Shipping address not found. Please go back and enter details."
+      );
       return;
     }
 
@@ -75,7 +86,7 @@ function ConfirmOrder() {
       if (orderId) navigate(`/order-success/${orderId}`);
     } catch (error) {
       console.error("❌ Failed to place order:", error);
-      alert("Failed to place order. Please try again.");
+      toast.error("Failed to place order. Please login to try again.");
     } finally {
       setLoading(false);
     }
@@ -89,33 +100,17 @@ function ConfirmOrder() {
 
       {/* Shipping Address */}
       <div className="border rounded-lg p-4 mb-6">
-        <h3 className="font-semibold mb-2">Shipping Address</h3>
-        <p>{shippingAddress.fullName}</p>
-        <p>{shippingAddress.address}</p>
-        <p>
-          {shippingAddress.city}, {shippingAddress.postalCode},{" "}
-          {shippingAddress.email},{shippingAddress.phoneNumber}
-        </p>
-        <select
-          id="state"
-          name="state"
-          value={shippingAddress.state}
-          onChange={(e) =>
-            setShippingAddress({ ...shippingAddress, state: e.target.value })
-          }
-          className="mt-1 p-2 border rounded-md w-full"
-          required
-        >
-          <option value="">Select State</option>
-          <option value="Lagos">Lagos</option>
-          <option value="Abuja">Abuja (FCT)</option>
-          <option value="Ogun">Ogun</option>
-          <option value="Oyo">Oyo</option>
-          <option value="Rivers">Rivers</option>
-          <option value="Others">Others</option>
-        </select>
-      </div>
+  <h3 className="font-semibold mb-2">Shipping Address</h3>
+  <p>{shippingAddress.fullName}</p>
+  <p>{shippingAddress.address}</p>
+  <p>
+    {shippingAddress.city}, {shippingAddress.state}, {shippingAddress.postalCode}
+  </p>
+  <p>Email: {shippingAddress.email}</p>
+  <p>Phone: {shippingAddress.phone}</p>
+</div>
 
+ 
       {/* Payment Method */}
       <div className="border rounded-lg p-4 mb-6">
         <h3 className="font-semibold mb-2">Payment Method</h3>
@@ -153,7 +148,7 @@ function ConfirmOrder() {
               <br />
               📧{" "}
               <a
-                href="mailto:support@edutoys.com"
+                href="mariseducreativeservicesandmore@gmail.com"
                 className="text-blue-600 underline"
               >
                 support@edutoys.com
@@ -174,7 +169,7 @@ function ConfirmOrder() {
       </div>
 
       {/* Order Items */}
-      <div className="border rounded-lg p-4 mb-6">
+      {/* <div className="border rounded-lg p-4 mb-6">
         <h3 className="font-semibold mb-2">Order Items</h3>
         {items.map(({ product, qty }) => (
           <div key={product._id} className="flex justify-between text-sm mb-1">
@@ -186,10 +181,46 @@ function ConfirmOrder() {
         ))}
         <hr className="my-2" />
         <div className="flex justify-between font-semibold">
-          <span>Total</span>
-          <span>₦{total.subTotal.toLocaleString()}</span>
+          <span>Total(include VAT)</span>
+          <span>₦{total.total.toLocaleString()}</span>
         </div>
-      </div>
+      </div> */}
+      {/* Order Items */}
+<div className="border rounded-lg p-4 mb-6">
+  <h3 className="font-semibold mb-2">Order Items</h3>
+
+  {items.map(({ product, qty }) => (
+    <div key={product._id} className="flex justify-between text-sm mb-1">
+      <span>{product.name} × {qty}</span>
+      <span>₦{(product.price * qty).toLocaleString()}</span>
+    </div>
+  ))}
+
+  <hr className="my-2" />
+
+  <div className="text-sm space-y-1">
+    <div className="flex justify-between">
+      <span>Subtotal</span>
+      <span>₦{total.subTotal.toLocaleString()}</span>
+    </div>
+
+    <div className="flex justify-between">
+      <span>Shipping Fee</span>
+      <span>₦{total.shippingFee.toLocaleString()}</span>
+    </div>
+
+    <div className="flex justify-between">
+      <span>VAT (7.5%)</span>
+      <span>₦{total.tax.toLocaleString()}</span>
+    </div>
+
+    <div className="flex justify-between font-semibold border-t pt-2">
+      <span>Total</span>
+      <span>₦{total.total.toLocaleString()}</span>
+    </div>
+  </div>
+</div>
+
 
       {/* Button */}
       <button
