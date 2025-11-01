@@ -1,7 +1,8 @@
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { formatCurrency } from "../utils/formatCurrency";
-import { useState} from "react";
+import { useState, useEffect} from "react";
+// import store from "../redux/store";
 import { ToastContainer } from "react-toastify";
 import { toast } from "react-toastify";
 import {
@@ -21,16 +22,40 @@ function CartPage() {
   const cartItems = useSelector(selectCartItems);
 
   // Use selector with state param (pass { state: selectedState })
-  const total = useSelector((state) =>
-    selectCartTotals(state, { state: selectedState })
-  );
+  // const total = useSelector((state) =>
+  //   selectCartTotals(state, { state: selectedState })
+  // );
+//   const total = useSelector((state) =>
+//   selectCartTotals(state, { state: selectedState })
+// );
+// const total = useSelector((state) =>
+//   selectCartTotals(state, { state: selectedState } )
+// );
+const total = useSelector((state) =>
+  selectCartTotals(state, selectedState || "")
+);
+// Sync order preview to localStorage whenever cartItems or selectedState changes
+  useEffect(() => {
+    if (cartItems.length > 0 && selectedState) {
+      const updatedTotals = selectCartTotals(
+        { cart: { items: cartItems } }, // mock state shape for selector
+        { state: selectedState }
+      );
+
+      localStorage.setItem(
+        "orderPreview",
+        JSON.stringify({
+          cartItems,
+          total: updatedTotals,
+          shippingAddress: { state: selectedState },
+        })
+      );
+    }
+  }, [cartItems, selectedState]);
 
   const handleProceedToCheckout = () => {
-    // if (!selectedState) {
-    //   toast.info("Please select your state before proceeding.");
-    //   return;
-    // }
-if (!selectedState) {
+  
+    if (!selectedState) {
   setTimeout(() => {
     // toast.info("Please select your state before proceeding.");
     toast.info("Please select your state before proceeding.", {
@@ -43,14 +68,14 @@ if (!selectedState) {
   return;
 }
 
-    localStorage.setItem(
-      "orderPreview",
-      JSON.stringify({
-        cartItems,
-        total,
-        shippingAddress: { state: selectedState },
-      })
-    );
+    // localStorage.setItem(
+    //   "orderPreview",
+    //   JSON.stringify({
+    //     cartItems,
+    //     total,
+    //     shippingAddress: { state: selectedState },
+    //   })
+    // );
 
     navigate("/place-order");
   };
