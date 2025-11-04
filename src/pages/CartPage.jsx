@@ -94,18 +94,18 @@ const total = useSelector((state) =>
   return (
     <div className="max-w-5xl mx-auto px-4 py-10 grid gap-8 lg:grid-cols-[1fr_380px]">
   {/* Cart Items */}
-  <div className="space-y-4">
+  <div className="space-y-4 relative z-10">
      <ToastContainer />
     {cartItems.map(({ product, qty }) => (
       <div
         key={product._id}
-        className="flex flex-col sm:flex-row gap-4 border rounded-2xl p-3 items-center sm:items-start"
+        className="flex flex-col sm:flex-row gap-4 border rounded-2xl p-3 items-center sm:items-start relative z-10"
       >
-        <div className="w-full sm:w-28 h-40 sm:h-24 rounded-xl overflow-hidden bg-gray-100">
+        <div className="w-full sm:w-28 h-40 sm:h-24 rounded-xl overflow-hidden bg-gray-100 relative z-0">
           <img
             src={product.image}
             alt={product.name}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-cover pointer-events-none"
           />
         </div>
 
@@ -147,7 +147,7 @@ const total = useSelector((state) =>
   </div>
 
   {/* Order Summary */}
-  <div className="border rounded-2xl p-5 h-fit lg:sticky lg:top-24">
+  <div className="border rounded-2xl p-5 h-fit lg:sticky lg:top-24 relative z-0">
     <h3 className="font-semibold text-lg mb-3">Order Summary</h3>
 
     {/* State Selection */}

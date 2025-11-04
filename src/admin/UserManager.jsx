@@ -40,6 +40,8 @@ const UsersManagement = ({ searchTerm = "" }) => {
             <h3 className="font-bold">{u.name || u.username}</h3>
             <p>Email: {u.email}</p>
             <p>Role: {u.role}</p>
+            <p><b>Joined:</b> {new Date(u.createdAt).toLocaleDateString()}</p>
+
           </div>
         ))
       ) : (

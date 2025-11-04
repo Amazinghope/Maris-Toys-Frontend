@@ -1,7 +1,7 @@
 
 const SearchBar = ({ activeSection, searchTerm, setSearchTerm }) => {
   return (
-    <div className="bg-white p-4 rounded-xl shadow-lg">
+    <div className="bg-white p-4 rounded-xl shadow-lg mb-7">
       <input
         type="text"
         placeholder={`Search ${activeSection}...`}

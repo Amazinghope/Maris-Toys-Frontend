@@ -7,7 +7,7 @@ const AgeSelector = ({ onAgeSelect }) => {
   const ageGroups = [
     { id: 0, range: "", label: "All Ages", description: "See all available toys" },
     { id: 1, range: "0-3", label: "0-3 Years", description: "Soft toys, rattles, and early learning toys" },
-    { id: 2, range: "3-6", label: "3-6 Years", description: "Building blocks, simple puzzles, and pretend play" },
+    { id: 2, range: "3-6", label: "3-6 Years", description: "Building blocks, puzzles, and pretend play" },
     { id: 3, range: "6-10", label: "6-10 Years", description: "STEM toys, board games, and creative kits" },
     { id: 4, range: "10+", label: "10+ Years", description: "Complex games, science kits, and strategy toys" },
   ];

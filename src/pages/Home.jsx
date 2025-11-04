@@ -98,7 +98,7 @@ const HomePage = () => {
                       <div className="flex gap-2 mt-4">
                         <Link
                           to={`/product/${product._id}`}
-                          className="text-sm text-blue-600 underline hover:text-blue-700"
+                          className="bg-blue-700 text-sm text-white underline hover:bg-blue-600"
                         >
                           View Details
                         </Link>

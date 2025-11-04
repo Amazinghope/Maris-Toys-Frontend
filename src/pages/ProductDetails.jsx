@@ -17,7 +17,7 @@ function ProductDetail() {
         const data = await fetchProductById(id);
         setProduct(data);
       } catch (err) {
-        console.error("Failed to fetch product", err);
+        console.error("Failed to fetch product, please log in to view details", err);
       } finally {
         setLoading(false);
       }
@@ -26,13 +26,13 @@ function ProductDetail() {
   }, [id]);
 
   if (loading) return <p>Loading product...</p>;
-  if (!product) return <p>Product not found.</p>;
+  if (!product) return <p>Please register or login to view details.</p>;
 
   return (
     <div className="max-w-2xl mx-auto p-4">
       <h1 className="text-2xl font-bold mb-2">{product.name}</h1>
-      <p className="text-lg text-gray-700 mb-4">₦{product.price}</p>
       <img src={product.image} alt={product.name} className="w-full mb-4" />
+      <p className="text-lg text-gray-700 mb-4">₦{product.price}</p>
       <p className="mb-4">{product.description}</p>
 
       <button 

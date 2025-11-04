@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../redux/cartSlice";
 import AgeSelector from "../components/AgeSelector";
-import { fetchProducts } from "../services/productService";  // No need for API import here, since fetchProducts handles it
+import { fetchProducts } from "../services/productService"; // No need for API import here, since fetchProducts handles it
 
 const Catalog = () => {
   const [products, setProducts] = useState([]);
@@ -26,27 +26,34 @@ const Catalog = () => {
   useEffect(() => {
     const fetchingProducts = async () => {
       try {
-        const all = await fetchProducts();  // Directly call the function (it handles the API internally)
-        
+        const all = await fetchProducts(); // Directly call the function (it handles the API internally)
+
         // Optional: Clean malformed image URLs to prevent 404s or future .replace() errors
-        const cleanedProducts = all.map(product => ({
+        const cleanedProducts = all.map((product) => ({
           ...product,
-          image: typeof product.image === 'string' 
-            ? product.image.replace(/['",]/g, '')  // Remove extra quotes/commas from malformed strings
-            : product.image || '',  // Ensure it's a string or empty
+          image:
+            typeof product.image === "string"
+              ? product.image.replace(/['",]/g, "") // Remove extra quotes/commas from malformed strings
+              : product.image || "", // Ensure it's a string or empty
         }));
-        
+
         setProducts(cleanedProducts);
 
         // Apply URL age filter on initial load
         if (ageFromURL) {
           setSelectedAge(ageFromURL);
-          setFiltered(cleanedProducts.filter(p => String(p.ageRange || "").toLowerCase() === ageFromURL.toLowerCase()));
+          setFiltered(
+            cleanedProducts.filter(
+              (p) =>
+                String(p.ageRange || "").toLowerCase() ===
+                ageFromURL.toLowerCase()
+            )
+          );
         } else {
           setFiltered(cleanedProducts);
         }
 
-        console.log("Fetched products:", cleanedProducts);  // Debug log
+        console.log("Fetched products:", cleanedProducts); // Debug log
       } catch (err) {
         console.error("Failed to fetch products:", err);
       } finally {
@@ -63,19 +70,24 @@ const Catalog = () => {
     if (searchTerm) {
       result = result.filter(
         (p) =>
-          String(p.name || "").toLowerCase().includes(searchTerm) ||
-          String(p.description || "").toLowerCase().includes(searchTerm)
+          String(p.name || "")
+            .toLowerCase()
+            .includes(searchTerm) ||
+          String(p.description || "")
+            .toLowerCase()
+            .includes(searchTerm)
       );
     }
 
     if (selectedAge) {
       result = result.filter(
-        (p) => String(p.ageRange || "").toLowerCase() === selectedAge.toLowerCase()
+        (p) =>
+          String(p.ageRange || "").toLowerCase() === selectedAge.toLowerCase()
       );
     }
 
     setFiltered(result);
-    console.log("Filtered products:", result);  // Debug log
+    console.log("Filtered products:", result); // Debug log
   }, [searchTerm, selectedAge, products]);
 
   // ✅ Handle age selection from AgeSelector (unchanged)
@@ -102,28 +114,51 @@ const Catalog = () => {
           {filtered.map((p) => (
             <div key={p._id} className="bg-white shadow-md rounded-xl p-4">
               <img
-                src={p.image || "/placeholder.png"}  // Now safer with cleaned data
+                src={p.image || "/placeholder.png"} // Now safer with cleaned data
                 alt={p.name || "Product"}
                 className="h-40 w-full object-cover rounded-md"
               />
               <div className="mt-3">
-                <h3 className="font-bold text-gray-800">{p.name || "Unnamed product"}</h3>
-                <p className="text-sm text-gray-600 line-clamp-2">
-                  {p.description || "No description available"}
+                <h3 className="font-bold text-gray-800">
+                  {p.name || "Unnamed product"}
+                </h3>
+
+                <p
+                  className={`text-sm ${
+                    p.stock > 0 ? "text-green-500" : "text-red-500"
+                  }`}
+                >
+                  Stock: {p.stock > 0 ? "Available" : "Out of stock"}
                 </p>
-                <p className="font-semibold text-blue-700 mt-1">
+
+                <p className="text-base font-bold text-emerald-600 mt-2">
                   ₦{p.price ?? "N/A"}
                 </p>
-                <p className="text-xs text-gray-500 mt-1">
+
+                <p className="text-gray-600 text-sm">
                   Age: {p.ageRange || "All ages"}
                 </p>
+                <p className="text-xs text-blue-500 mt-2">Skills: {p.skills}</p>
+                <p className="text-sm mt-1 text-gray-600">
+                 <span className="text-gray-600 font-bold">Description:</span>  {p.description || "No description available"}
+                </p>
               </div>
-              <button
-                onClick={() => dispatch(addToCart({ id: p._id, product: p }))}
-                className="mt-4 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
-              >
-                Add to Cart
-              </button>
+
+              <div className="flex space-x-2 mt-2">
+                <Link
+                  to={`/product/${p._id}`}
+                  className="bg-blue-900 text-sm text-white p-2 rounded-lg hover:bg-blue-600"
+                >
+                  View Details
+                </Link>
+
+                <button
+                  onClick={() => dispatch(addToCart({ id: p._id, product: p }))}
+                  className=" bg-blue-900 text-sm text-white p-2 rounded-lg hover:bg-blue-600 transition"
+                >
+                  Add to Cart
+                </button>
+              </div>
             </div>
           ))}
         </div>
@@ -133,7 +168,3 @@ const Catalog = () => {
 };
 
 export default Catalog;
-
-
-
-

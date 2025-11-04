@@ -26,7 +26,8 @@ const SideNav = ({ activeSection, setActiveSection,  }) => {
     <div className="fixed top-0 left-0 z-50 w-64 bg-gray-700 text-white h-screen p-4 flex flex-col ">
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-1">Admin Panel</h2>
-        <p>Welcome, {user?.name}</p>
+        <p>Welcome Back! </p>
+        <p>{user?.name}</p>
         <p className="text-sm">Role: {user?.role}</p>
       </div>
 
