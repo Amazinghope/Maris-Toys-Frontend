@@ -98,13 +98,13 @@ const HomePage = () => {
                       <div className="flex gap-2 mt-4">
                         <Link
                           to={`/product/${product._id}`}
-                          className="bg-blue-700 text-sm text-white underline hover:bg-blue-600"
+                          className="bg-blue-800 text-sm text-white px-3 py-1 rounded hover:bg-blue-600"
                         >
                           View Details
                         </Link>
                         <button
                           onClick={() => dispatch(addToCart({ product }))}
-                          className="text-sm bg-yellow-400 text-blue-800 px-3 py-1 rounded hover:bg-yellow-500"
+                          className="text-sm bg-blue-800 text-blue-800 px-3 py-1 rounded hover:bg-blue-600"
                         >
                           Add to Cart
                         </button>
