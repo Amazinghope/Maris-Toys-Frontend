@@ -10,6 +10,7 @@ function OrderSuccess() {
 const { orderDetails, loading } = ordersState || {};
 
   // const { orderDetails, loading } = useSelector((state) => state.order);
+  
 
   useEffect(() => {
     dispatch(getOrderById(id));
@@ -31,10 +32,26 @@ const { orderDetails, loading } = ordersState || {};
           {item.product?.name} × {item.qty}
         </p>
       ))}
-
-      <p className="mt-4 text-lg font-semibold">
-        Total: ₦{orderDetails.totalPrice?.toLocaleString()}
+       <div className="mt-6 border-t pt-4 text-left max-w-md mx-auto">
+        <p className="flex justify-between">
+        <span>Subtotal:</span>
+        <span>₦{orderDetails.totalPrice?.toLocaleString()}</span>
       </p>
+
+         <p className="flex justify-between">
+        <span>VAT (7.5%):</span>
+        <span>₦{orderDetails.vat?.toLocaleString()}</span>
+      </p>
+      <p className="flex justify-between">
+        <span>Shipping Fee:</span>
+        <span>₦{orderDetails.shippingFee?.toLocaleString()}</span>
+      </p>
+      <p className="flex justify-between font-bold text-lg mt-2 border-t pt-2">
+        <span>Grand Total:</span>
+        <span>₦{orderDetails.grandTotal?.toLocaleString()}</span>
+      </p>
+      </div>
+      
 
       <Link
         to="/"

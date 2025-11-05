@@ -62,14 +62,14 @@ const UserDashboard = () => {
 
         return (
           <div className="space-y-4">
-            <h2 className="text-2xl font-semibold text-blue-700 mb-4">My Orders</h2>
+            <h2 className="text-2xl font-semibold text-white mb-4">My Orders</h2>
             {orders.map((order) => (
               <div
                 key={order._id}
-                className="bg-white p-4 rounded-lg shadow hover:shadow-lg transition"
+                className="bg-orange-100 p-4 rounded-lg shadow hover:shadow-lg transition"
               >
                 <div className="flex justify-between items-center">
-                  <p className="font-semibold">Order ID: {order._id}</p>
+                  <p className="font-semibold text-blue-700">Order ID: {order._id}</p>
                   <p
                     className={`capitalize font-medium ${
                       order.deliveryStatus === "Delivered"
@@ -83,8 +83,8 @@ const UserDashboard = () => {
                   </p>
                 </div>
 
-                <p>Total: ₦{order.totalPrice}</p>
-                <p>Date: {new Date(order.createdAt).toLocaleDateString()}</p>
+                <p className="text-green-800">Total: ₦{order.totalPrice}</p>
+                <p className="text-gray-700"> Date: {new Date(order.createdAt).toLocaleDateString()}</p>
 
                 {order.trackingNumber && (
                   <p>Tracking No: <span className="font-medium">{order.trackingNumber}</span></p>
@@ -143,10 +143,10 @@ const UserDashboard = () => {
        <Header/>
       <div className="min-h-screen bg-gray-100 flex flex-col md:flex-row">
       {/* Sidebar */}
-      <aside className="bg-blue-700 text-white w-full md:w-64 p-4 space-y-6 md:min-h-screen fixed top-0 left-0">
+      <aside className="bg-slate-700 text-white w-full md:w-64 p-4 space-y-6 md:min-h-screen fixed top-0 left-0">
         <h1 className="text-2xl font-bold mb-6 text-center">User Dashboard</h1>
         <div className="p-6">
-          <h1>Welcome, {user?.name}!</h1>
+          <h1>Welcome Back, {user?.name}!</h1>
           <p>Your role: {user?.role}</p>
         </div>
 
@@ -184,7 +184,7 @@ const UserDashboard = () => {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6 md:p-8 space-y-6  ml-64">{renderSection()}</main>
+      <main className="flex-1 p-6 md:p-8 space-y-6 bg-slate-500 text-blue-500 ml-64">{renderSection()}</main>
     </div>
     </div>
     

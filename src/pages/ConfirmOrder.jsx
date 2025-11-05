@@ -81,7 +81,12 @@ function ConfirmOrder() {
         })),
         shippingAddress,
         paymentMethod,
-        totalPrice: total.total,
+        vat: total.tax,
+  shippingFee: total.shippingFee,
+  grandTotal: total.total,
+  totalPrice: total.subTotal,
+
+        // totalPrice: total.total,
       };
 
       const res = await createOrder(orderData);
