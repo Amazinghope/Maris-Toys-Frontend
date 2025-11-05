@@ -104,7 +104,7 @@ const HomePage = () => {
                         </Link>
                         <button
                           onClick={() => dispatch(addToCart({ product }))}
-                          className="text-sm bg-blue-800 text-blue-800 px-3 py-1 rounded hover:bg-blue-600"
+                          className="text-sm bg-blue-800 text-white px-3 py-1 rounded hover:bg-blue-600"
                         >
                           Add to Cart
                         </button>
