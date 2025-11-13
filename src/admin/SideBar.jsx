@@ -10,16 +10,17 @@ const SideNav = ({ activeSection, setActiveSection,  }) => {
   ];
 
     // implement logout API call
+    const navigate = useNavigate()
  const handleLogout = async () => {
     try {
-      await API.post("/api/auth/logout", { method: "POST", credentials: "include" });
+      await API.post("/auth/log-out", { withCredentials: true});
       navigate("/login");
     } catch (error) {
       alert("Logout failed");
     }
   };
   
-    console.log("Logout clicked");
+    // console.log("Logout clicked");
   const {user} = useOutletContext()
 
   return (

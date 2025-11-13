@@ -35,15 +35,15 @@ const Login = () => {
 
   const resetForm = () => setFormData({ email: "", password: "" });
 
-  const handleLogout = async () => {
-    try {
-      await API.post("/auth/log-out", {withCredentials: true});
-      localStorage.removeItem("tempToken");
-      toast.success("Logged out successfully");
-    } catch {
-      toast.error("Logout failed");
-    }
-  };
+  // const handleLogout = async () => {
+  //   try {
+  //     await API.post("/auth/log-out", {withCredentials: true});
+  //     localStorage.removeItem("tempToken");
+  //     toast.success("Logged out successfully");
+  //   } catch {
+  //     toast.error("Logout failed");
+  //   }
+  // };
 
   useEffect(() => {
     localStorage.removeItem("tempToken");
@@ -175,13 +175,13 @@ const Login = () => {
             Log in with Google
           </button>
 
-          <button
+          {/* <button
             onClick={handleLogout}
             className="border-2 m-2 w-[90%] p-2 bg-red-600 text-white font-bold rounded-full hover:bg-red-700"
             type="button"
           >
             Logout 
-          </button>
+          </button> */}
 
           <p className="m-3 text-center">
             Don’t have an account?{" "}

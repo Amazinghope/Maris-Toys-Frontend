@@ -3,13 +3,29 @@ import API from "../api";
 // import { io } from "socket.io-client";
 import io from 'socket.io-client'
 
-const socket = io("https://maris-toys-backend.onrender.com", { withCredentials: true }); // replace with live URL
+// const socket = io("https://maris-toys-backend.onrender.com", { withCredentials: true }); // replace with live URL
+const socket = io("https://maris-toys-backend.onrender.com", {
+  withCredentials: true,
+  transports: ["websocket"], // ✅ Prefer websocket only (Render-safe)
+  reconnection: true,
+  reconnectionAttempts: 5,
+  reconnectionDelay: 1000,
+});
+
+socket.on("connect", () => {
+  console.log("🟢 Connected to Socket.IO server:", socket.id);
+});
+
+socket.on("connect_error", (err) => {
+  console.error("❌ Socket connection failed:", err.message);
+});
 
 const ChatBox = ({ currentUser, chatPartner }) => {
   const [messages, setMessages] = useState([]);
   const [content, setContent] = useState("");
 
-  const roomId = `${currentUser._id}_${chatPartner._id}`;
+  // const roomId = `${currentUser._id}_${chatPartner._id}`;
+const roomId = [currentUser._id, chatPartner._id].sort().join("_");
 
   useEffect(() => {
     // Join room

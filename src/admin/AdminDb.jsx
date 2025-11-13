@@ -24,7 +24,9 @@ const AdminDashboard = ({ user }) => {
         setCurrentUser(meRes.data.user);
 
         const usersRes = await API.get("/users/get-all-users", { withCredentials: true });
-        setChatUsers(usersRes.data.userDetails.filter((u) => u.role === "regular"));
+        console.log("usersRes.data:", usersRes.data);
+
+        setChatUsers((usersRes.data.usersDetails || []).filter((u) => u.role === "regular"));
 
         setLoadingChat(false);
       } catch (err) {
